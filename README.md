@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EPIScode 🚀
+> Plataforma y soluciones de software para la Escuela Profesional de Ingeniería de Sistemas (EPIS).
 
-## Getting Started
+Bienvenido al repositorio oficial de **EPIScode**. Este proyecto es desarrollado e impulsado por estudiantes de la Escuela Profesional de Ingeniería de Sistemas, combinando mentoría técnica de estudiantes de 4to año y desarrollo activo de estudiantes de 2do año.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🛠️ Stack Tecnológico
+
+- **Framework**: [Next.js](https://nextjs.org/) (App Router, Turbopack)
+- **Biblioteca UI**: [React](https://react.dev/)
+- **Estilos**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Lenguaje**: [TypeScript](https://www.typescriptlang.org/)
+- **Gestor de Paquetes**: [pnpm](https://pnpm.io/)
+- **Calidad de Código**: ESLint
+
+---
+
+## 📁 Estructura del Proyecto
+
+El código fuente se encuentra organizado bajo una arquitectura modular y escalable dentro de `src/`:
+
+```text
+src/
+├── app/                  # Rutas y páginas de la aplicación (Next.js App Router)
+│   ├── api/health/       # Endpoint de diagnóstico del estado del servidor
+│   ├── globals.css       # Configuración global de estilos y Tailwind CSS v4
+│   ├── layout.tsx        # Layout raíz
+│   └── page.tsx          # Página principal
+├── components/           # Componentes de interfaz (a implementar tras diseño en Figma)
+│   ├── ui/               # Componentes atómicos/base reutilizables
+│   └── layout/           # Componentes estructurales (Navbar, Sidebar, Footer)
+├── features/             # Módulos por dominio de negocio (auth, events, students, etc.)
+├── hooks/                # Hooks personalizados de React
+├── lib/                  # Utilidades y configuración de clientes (ej. utils.ts para cn())
+├── server/               # Lógica de servidor y servicios de backend
+└── types/                # Interfaces y contratos de tipos en TypeScript
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Inicio Rápido (Getting Started)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Requisitos Previos
+- **Node.js**: v20 o superior
+- **pnpm**: v9 o superior (`npm install -g pnpm`)
 
-## Learn More
+### Instalación y Ejecución
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clonar el repositorio**:
+   ```bash
+   git clone https://github.com/JhonAQ/EPIScode.git
+   cd EPIScode
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Instalar dependencias**:
+   ```bash
+   pnpm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Configurar variables de entorno**:
+   ```bash
+   cp .env.example .env.local
+   ```
 
-## Deploy on Vercel
+4. **Iniciar el servidor de desarrollo**:
+   ```bash
+   pnpm dev
+   ```
+   Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la aplicación.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Scripts Disponibles
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `pnpm dev`: Inicia el servidor de desarrollo con Turbopack.
+- `pnpm build`: Compila la aplicación para producción.
+- `pnpm start`: Inicia el servidor compilado de producción.
+- `pnpm lint`: Ejecuta el análisis estático de código con ESLint.
+
+---
+
+## 🤝 Flujo de Contribución y Ramas
+
+Para mantener la calidad y el orden del repositorio, todo el equipo debe seguir las normas de colaboración:
+
+- **NUNCA hagas commit ni push directo a `main`**.
+- Trabaja siempre en una rama temática (`feat/...`, `fix/...`, `spike/...`).
+- Escribe mensajes de commit bajo la convención **Conventional Commits** (`feat:`, `fix:`, `docs:`, etc.).
+- Abre un **Pull Request** y solicita revisión a los Tech Leads.
+
+👉 **Consulta la guía completa en [CONTRIBUTING.md](./CONTRIBUTING.md)**.
+
+---
+
+## 👥 Equipo y Contribuidores (Contributors)
+
+### Mentores & Tech Leads (4to Año)
+- **Jhonatan** — *Frontend Lead & Architecture*
+- **Ryan** — *Tech Lead & Direction*
+
+### Equipo de Desarrollo (2do Año)
+- Estudiantes desarrolladores de la Escuela Profesional de Ingeniería de Sistemas (EPIS).
+
+---
+
+## 📄 Licencia
+
+Este proyecto está desarrollado con fines académicos e institucionales para la **Escuela Profesional de Ingeniería de Sistemas**.
