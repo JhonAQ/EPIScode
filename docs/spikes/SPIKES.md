@@ -1,5 +1,5 @@
 # Tareas de Exploración Tecnológica (Spikes) 🔬
-> Documento de referencia para la reunión del sábado 10 de octubre con el equipo de 2do año.
+> Documento de referencia para la reunión del sábado 10 de octubre con el equipo de desarrollo.
 
 Los **Spikes** son investigaciones de corta duración (2 a 4 días) orientadas a responder preguntas técnicas y construir pequeñas pruebas de concepto (PoCs) antes de integrarlas al código principal del proyecto.
 

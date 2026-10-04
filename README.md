@@ -1,7 +1,7 @@
 # EPIScode 🚀
 > Plataforma y soluciones de software para la Escuela Profesional de Ingeniería de Sistemas (EPIS).
 
-Bienvenido al repositorio oficial de **EPIScode**. Este proyecto es desarrollado e impulsado por estudiantes de la Escuela Profesional de Ingeniería de Sistemas, combinando mentoría técnica de estudiantes de 4to año y desarrollo activo de estudiantes de 2do año.
+Bienvenido al repositorio oficial de **EPIScode**. Este proyecto es desarrollado e impulsado por la comunidad de la Escuela Profesional de Ingeniería de Sistemas (EPIS).
 
 ---
 
@@ -88,19 +88,6 @@ Para mantener la calidad y el orden del repositorio, todo el equipo debe seguir 
 - Abre un **Pull Request** y solicita revisión a los Tech Leads.
 
 👉 **Consulta la guía completa en [CONTRIBUTING.md](./CONTRIBUTING.md)**.
-
----
-
-## 👥 Equipo y Contribuidores (Contributors)
-
-### Mentores & Tech Leads (4to Año)
-- **Jhonatan** — *Frontend Lead & Architecture*
-- **Ryan** — *Tech Lead & Direction*
-
-### Equipo de Desarrollo (2do Año)
-- Estudiantes desarrolladores de la Escuela Profesional de Ingeniería de Sistemas (EPIS).
-
----
 
 ## 📄 Licencia
 
