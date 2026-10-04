@@ -33,7 +33,6 @@ Esta guía define las reglas de colaboración, nomenclatura de ramas, formato de
 | `feat/`   | Nueva funcionalidad o módulo                            | `feat/auth-login`            |
 | `fix/`    | Corrección de un bug o error                             | `fix/header-z-index`         |
 | `docs/`   | Cambios o adiciones solo en documentación                | `docs/update-readme`         |
-| `spike/`  | Pruebas de concepto o exploración tecnológica            | `spike/n8n-automation`       |
 | `refactor/`| Reestructuración de código sin alterar comportamiento   | `refactor/api-routes`        |
 | `chore/`  | Mantenimiento, dependencias o configuración del repo     | `chore/update-pnpm-lock`     |
 

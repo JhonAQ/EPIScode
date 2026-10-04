@@ -83,7 +83,7 @@ src/
 Para mantener la calidad y el orden del repositorio, todo el equipo debe seguir las normas de colaboración:
 
 - **NUNCA hagas commit ni push directo a `main`**.
-- Trabaja siempre en una rama temática (`feat/...`, `fix/...`, `spike/...`).
+- Trabaja siempre en una rama temática (`feat/...`, `fix/...`, `docs/...`).
 - Escribe mensajes de commit bajo la convención **Conventional Commits** (`feat:`, `fix:`, `docs:`, etc.).
 - Abre un **Pull Request** y solicita revisión a los Tech Leads.
 

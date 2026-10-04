@@ -7,11 +7,10 @@
 - [ ] `docs`: Modificación o adición de documentación
 - [ ] `style`: Ajustes de formato o estilos (sin cambios lógicos)
 - [ ] `refactor`: Mejora o reestructuración de código
-- [ ] `spike`: Investigación o prueba de concepto tecnológica
 - [ ] `chore`: Mantenimiento, dependencias o configuración
 
 ## 🔗 Tarea o Issue Relacionado
-<!-- Ej: Closes #12, Refs #34 o "Spike n8n" -->
+<!-- Ej: Closes #12, Refs #34 -->
 
 ## 📋 Checklist de Verificación
 - [ ] Mi código compila localmente con éxito (`pnpm build`).
