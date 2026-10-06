@@ -1,0 +1,39 @@
+# Base de datos vectorial para la actividad RAG (Postgres + pgvector).
+#   pnpm db:up      -> levanta los servicios
+#   pnpm db:down    -> los detiene (conserva los datos)
+#   pnpm db:reset   -> los detiene y BORRA los datos (re-ejecuta db/init/*.sql)
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: episcode-rag-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-episcode}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-episcode}
+      POSTGRES_DB: ${POSTGRES_DB:-episcode_rag}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Todo .sql en esta carpeta se ejecuta SOLO la primera vez que se crea el volumen.
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-episcode} -d ${POSTGRES_DB:-episcode_rag}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Interfaz web opcional para inspeccionar tablas: http://localhost:8080
+  # Sistema: PostgreSQL | Servidor: db | Usuario/Clave/BD: ver variables de arriba
+  adminer:
+    image: adminer:latest
+    container_name: episcode-rag-adminer
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+
+volumes:
+  pgdata:
