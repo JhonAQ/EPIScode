@@ -24,6 +24,8 @@ El código fuente se encuentra organizado bajo una arquitectura modular y escala
 src/
 ├── app/                  # Rutas y páginas de la aplicación (Next.js App Router)
 │   ├── api/health/       # Endpoint de diagnóstico del estado del servidor
+│   ├── api/chat/         # Endpoint del chatbot RAG
+│   ├── chat/             # Página del chatbot
 │   ├── globals.css       # Configuración global de estilos y Tailwind CSS v4
 │   ├── layout.tsx        # Layout raíz
 │   └── page.tsx          # Página principal
@@ -75,6 +77,13 @@ src/
 - `pnpm build`: Compila la aplicación para producción.
 - `pnpm start`: Inicia el servidor compilado de producción.
 - `pnpm lint`: Ejecuta el análisis estático de código con ESLint.
+
+---
+
+## 🤖 Actividad: Chatbot con RAG
+
+Actividad exploratoria con Postgres + pgvector (Docker), embeddings de Hugging Face y LLM Gemini/Groq.
+👉 **Guía completa: [docs/ACTIVIDAD-RAG.md](./docs/ACTIVIDAD-RAG.md)**
 
 ---
 
