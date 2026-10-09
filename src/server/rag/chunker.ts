@@ -26,7 +26,22 @@ export const DEFAULT_CHUNK_OPTIONS: ChunkOptions = { size: 800, overlap: 100 };
  * Nivel 3: guardar en `metadata` el título de la sección a la que pertenece.
  */
 export function chunkText(text: string, options: ChunkOptions = DEFAULT_CHUNK_OPTIONS): TextChunk[] {
-  void text;
-  void options;
-  throw new Error("TODO: implementar chunkText() en src/server/rag/chunker.ts");
+  const { size, overlap } = options; 
+  const chunks: TextChunk[] = [];
+  let start = 0;
+  let index = 0;
+
+  while (start < text.length) {
+    const end = Math.min(start + size, text.length);
+    const content = text.slice(start, end);
+
+    chunks.push({ index, content, metadata: {} });
+
+    if (end === text.length) break;
+
+    start = end - overlap;
+    index++;
+  }
+
+  return chunks;
 }
