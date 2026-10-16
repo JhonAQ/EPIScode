@@ -11,12 +11,9 @@ export const config = {
   get databaseUrl() {
     return required("DATABASE_URL");
   },
-  hf: {
-    get token() {
-      return required("HF_API_TOKEN");
-    },
-    model: process.env.HF_EMBEDDING_MODEL ?? "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
-    dimensions: Number(process.env.EMBEDDING_DIMENSIONS ?? 384),
+  embeddings: {
+    model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    dimensions: 384,
   },
   llm: {
     provider: (process.env.LLM_PROVIDER ?? "gemini") as "gemini" | "groq",

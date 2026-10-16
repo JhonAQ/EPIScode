@@ -85,6 +85,8 @@ src/
 Actividad exploratoria con Postgres + pgvector (Docker), embeddings de Hugging Face y LLM Gemini/Groq.
 👉 **Guía completa: [docs/ACTIVIDAD-RAG.md](./docs/ACTIVIDAD-RAG.md)**
 
+La parte B usa embeddings locales en CPU: [preparación y pruebas](./docs/EMBEDDINGS-LOCALES.md).
+
 ---
 
 ## 🤝 Flujo de Contribución y Ramas

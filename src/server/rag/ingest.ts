@@ -4,6 +4,8 @@ import { chunkText } from "./chunker";
 export async function ingestDocument(source: string, text: string): Promise<number> {
   const chunks = chunkText(text);
   if (chunks.length === 0) {
+    const { saveChunks } = await import("./store");
+    await saveChunks(source, [], []);
     return 0;
   }
 

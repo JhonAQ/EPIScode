@@ -1,0 +1,5 @@
+# Versiones verificadas con Python 3.14.5 en Windows x64 (CPU).
+sentence-transformers==6.1.0
+torch==2.14.1
+transformers==5.20.0
+numpy==2.5.4
