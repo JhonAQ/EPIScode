@@ -17,6 +17,9 @@ export const config = {
     },
     model: process.env.HF_EMBEDDING_MODEL ?? "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
     dimensions: Number(process.env.EMBEDDING_DIMENSIONS ?? 384),
+    // Carpeta local donde están guardados los archivos del modelo.
+    // HF_LOCAL_PATH permite cambiar la ubicación sin modificar este código.
+    localPath: process.env.HF_LOCAL_PATH ?? "./paraphrase-multilingual-MiniLM-L12-v2",
   },
   llm: {
     provider: (process.env.LLM_PROVIDER ?? "gemini") as "gemini" | "groq",
