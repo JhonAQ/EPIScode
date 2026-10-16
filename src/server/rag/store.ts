@@ -68,19 +68,30 @@ export async function saveChunks(source: string, chunks: TextChunk[], embeddings
   }
 }
 
-/**
- * TODO (Integrante C): buscar los `topK` fragmentos más parecidos a la pregunta.
- *
- * Pistas:
- *  - `<=>` es la distancia coseno en pgvector; similitud = 1 - distancia.
- *      SELECT ..., 1 - (embedding <=> $1::vector) AS score
- *      FROM chunks ORDER BY embedding <=> $1::vector LIMIT $2
- *  - Descarta resultados con `score` bajo (umbral). ¿Qué valor funciona mejor? Pruébalo.
- */
+/** Devuelve hasta topK fragmentos por distancia coseno, con score >= umbral del servidor. */
 export async function searchSimilar(queryEmbedding: number[], topK = 4): Promise<ChatSource[]> {
-  void getPool;
-  void toVectorLiteral;
-  void queryEmbedding;
-  void topK;
-  throw new Error("TODO: implementar searchSimilar() en src/server/rag/store.ts");
+  if (!Array.isArray(queryEmbedding) || queryEmbedding.length !== config.embeddings.dimensions ||
+      Array.from(queryEmbedding).some((value) => typeof value !== "number" || !Number.isFinite(value))) {
+    throw new Error("searchSimilar: el vector debe contener 384 números finitos.");
+  }
+  // La norma es cero exactamente cuando todas las componentes son cero.
+  if (queryEmbedding.every((value) => value === 0)) {
+    throw new Error("searchSimilar: el vector debe tener norma distinta de cero.");
+  }
+  if (!Number.isSafeInteger(topK) || topK <= 0) {
+    throw new Error("searchSimilar: topK debe ser un entero positivo seguro.");
+  }
+  const minSimilarity = config.rag.minSimilarity;
+
+  const result = await getPool().query<ChatSource>(
+    `SELECT source, chunk_index AS "chunkIndex", content,
+            1 - (embedding <=> $1::vector) AS score
+     FROM chunks
+     ORDER BY embedding <=> $1::vector ASC
+     LIMIT $2`,
+    [toVectorLiteral(queryEmbedding), topK],
+  );
+  // Mantener ORDER BY distancia + LIMIT para pgvector y filtrar antes del prompt.
+  // No redondear: un score exactamente igual al umbral también se conserva.
+  return result.rows.filter(({ score }) => Number.isFinite(score) && score >= minSimilarity);
 }

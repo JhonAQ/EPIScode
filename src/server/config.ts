@@ -15,6 +15,17 @@ export const config = {
     model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
     dimensions: 384,
   },
+  rag: {
+    /** Corte de ruido calibrado; no determina si el contexto contiene una respuesta. */
+    get minSimilarity() {
+      const value = process.env.RAG_MIN_SIMILARITY ?? "0.15";
+      const threshold = Number(value);
+      if (value.trim() === "" || !Number.isFinite(threshold) || threshold < -1 || threshold > 1) {
+        throw new Error("RAG_MIN_SIMILARITY debe ser un número finito entre -1 y 1.");
+      }
+      return threshold;
+    },
+  },
   llm: {
     provider: (process.env.LLM_PROVIDER ?? "gemini") as "gemini" | "groq",
     gemini: {

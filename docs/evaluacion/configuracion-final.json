@@ -1,0 +1,19 @@
+{
+  "recordedAt": "2026-10-16T01:24:00.303Z",
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "embeddingModel": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "maxSeqLength": 256,
+  "dimensions": 384,
+  "topK": 4,
+  "minSimilarity": 0.15,
+  "files": {
+    "scripts/embed_local.py": "18de9eb94480802b227c2de66aeaf052d9c6de975fbacd976d1cc283bd28274e",
+    "src/server/rag/embeddings.ts": "16e0a0e50a0ad067f309da1fef97e3abebf7a48f54d0aaa2b328f1dc144f8607",
+    "src/server/rag/prompt.ts": "3d6fe5b62a69b331600e214b5fc0f947256dc61cb5f5ae1b25128509520b2f5c",
+    "src/server/rag/store.ts": "132b4b4b4629eab20494ed6aa54f9a94f0a9406a8126d75eeedc00190c526445",
+    "src/server/rag/pipeline.ts": "bb6121b507f2a7fba8cfdadfce9d5778981be5a58a0ae98ce6008291b179f8d2",
+    "src/server/rag/llm/groq.ts": "df596e168f7e914d4b2229ca58a56d6587be442a385fcafc65a396bf5a18b221",
+    "src/server/config.ts": "660646235364acdb548649215362eb9282346a135194f0e89ffe40a9e31c94c1"
+  }
+}

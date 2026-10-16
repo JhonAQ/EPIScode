@@ -3,6 +3,10 @@
 `embedTexts()` y `embedQuery()` usan el mismo modelo
 `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` en CPU, con
 384 dimensiones. No requieren `HF_API_TOKEN` ni llaman a Inference API.
+La entrada usa `max_seq_length=256` en documentos y preguntas, tras medir
+truncamiento con el límite original de 128. Se regeneraron los cinco vectores
+del ejemplo sin cambiar sus textos, índices ni IDs. Ver el diagnóstico de
+truncamiento y la evaluación en `docs/evaluacion/`.
 La configuración fija vive en `src/server/config.ts`, bajo `embeddings`;
 las antiguas variables `HF_EMBEDDING_MODEL` y `EMBEDDING_DIMENSIONS` no se usan.
 

@@ -1,21 +1,37 @@
+import "server-only";
 import type { ChatMessage, ChatResponse } from "@/types";
+import { embedQuery } from "./embeddings";
+import { searchSimilar } from "./store";
+import { buildSystemPrompt } from "./prompt";
+import { getLlm } from "./llm";
 
-/**
- * TODO (Integrantes B + C, en conjunto): orquestar el flujo RAG de consulta.
- *
- *   pregunta -> embedding -> búsqueda -> prompt con contexto -> LLM -> respuesta + fuentes
- *
- * Funciones que debe usar: embedQuery (./embeddings), searchSimilar (./store),
- * buildSystemPrompt (./prompt) y getLlm (./llm).
- * La pregunta actual es el último mensaje de `messages` (validado en route.ts).
- *
- * Para explorar:
- *  - usar el historial para reformular la pregunta antes de buscar (preguntas de seguimiento)
- *  - qué hacer si `searchSimilar` no devuelve nada (¿llamar igual al LLM?)
- *  - streaming de la respuesta
- *  - cachear embeddings de preguntas repetidas
- */
+/** Coordina la consulta RAG; searchSimilar aplica el umbral antes de construir el prompt. */
 export async function answerQuestion(messages: ChatMessage[]): Promise<ChatResponse> {
-  void messages;
-  throw new Error("TODO: implementar answerQuestion() en src/server/rag/pipeline.ts");
+  if (!Array.isArray(messages) || messages.length === 0) {
+    throw new Error("answerQuestion: se requiere un historial no vacío con una pregunta del usuario.");
+  }
+  // Copiar antes del primer await: no modificar ni duplicar la pregunta del llamador.
+  const history = Array.from(messages, (message) => {
+    if (!message || (message.role !== "user" && message.role !== "assistant") ||
+        typeof message.content !== "string" || message.content.trim().length === 0) {
+      throw new Error("answerQuestion: cada mensaje debe tener un rol válido y texto no vacío.");
+    }
+    return { role: message.role, content: message.content };
+  });
+  const current = history[history.length - 1];
+  if (current.role !== "user") {
+    throw new Error("answerQuestion: el último mensaje debe ser una pregunta del usuario.");
+  }
+
+  const embedding = await embedQuery(current.content.trim());
+  const sources = await searchSimilar(embedding);
+  if (sources.length === 0) {
+    return {
+      answer: "No dispongo de información suficiente en los fragmentos proporcionados para responder esa pregunta.",
+      sources: [],
+    };
+  }
+  const system = buildSystemPrompt(sources);
+  const answer = await getLlm().generate({ system, messages: history });
+  return { answer, sources };
 }

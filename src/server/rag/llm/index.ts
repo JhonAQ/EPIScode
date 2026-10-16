@@ -1,11 +1,19 @@
+import "server-only";
+import { config } from "../../config";
+import { groqClient } from "./groq";
+import { geminiClient } from "./gemini";
 import type { LlmClient } from "./types";
 
 export type { LlmClient, LlmRequest } from "./types";
 
-/**
- * TODO (Integrante C): devolver el cliente según `config.llm.provider` (LLM_PROVIDER).
- * Agregar otro proveedor = un archivo nuevo + un caso aquí. Lancen un error claro si el valor es inválido.
- */
+/** Selecciona el proveedor configurado sin fallback silencioso. */
 export function getLlm(): LlmClient {
-  throw new Error("TODO: implementar getLlm() en src/server/rag/llm/index.ts");
+  switch (config.llm.provider) {
+    case "groq":
+      return groqClient;
+    case "gemini":
+      return geminiClient;
+    default:
+      throw new Error("LLM_PROVIDER desconocido. Los proveedores implementados son gemini y groq.");
+  }
 }

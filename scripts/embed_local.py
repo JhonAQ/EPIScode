@@ -8,6 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+MAX_SEQ_LENGTH = 256  # Calibrado: los chunks actuales usan hasta 189 tokens; el límite posicional es 512.
 
 # Configurar antes de importar Hugging Face. Nunca descargar ni buscar tokens.
 os.environ["HF_HOME"] = str(ROOT / ".venv" / "huggingface")
@@ -36,6 +37,7 @@ def main():
         from sentence_transformers import SentenceTransformer
 
         model = SentenceTransformer(MODEL, device="cpu", local_files_only=True, token=False)
+        model.max_seq_length = MAX_SEQ_LENGTH
         vectors = model.encode(texts, batch_size=32, show_progress_bar=False)
         if vectors.shape != (len(texts), 384) or not np.isfinite(vectors).all():
             raise ValueError("El modelo debe devolver 384 números finitos por texto.")
