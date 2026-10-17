@@ -22,7 +22,7 @@ export const config = {
     localPath: process.env.HF_LOCAL_PATH ?? "./paraphrase-multilingual-MiniLM-L12-v2",
   },
   llm: {
-    provider: (process.env.LLM_PROVIDER ?? "gemini") as "gemini" | "groq",
+    provider: (process.env.LLM_PROVIDER ?? "gemini") as "gemini" | "groq" | "openrouter",
     gemini: {
       get apiKey() {
         return required("GEMINI_API_KEY");
@@ -34,6 +34,14 @@ export const config = {
         return required("GROQ_API_KEY");
       },
       model: process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile",
+    },
+    openrouter: {
+      get apiKey() {
+        return required("OPENROUTER_API_KEY");
+      },
+      get model() {
+        return required("OPENROUTER_MODEL");
+      },
     },
   },
 } as const;
