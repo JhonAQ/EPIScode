@@ -163,3 +163,11 @@ Diagnóstico rápido cuando una respuesta es mala:
 - Gemini API: https://ai.google.dev/gemini-api/docs
 - Groq: https://console.groq.com/docs
 - Next.js (esta versión tiene cambios): leer `node_modules/next/dist/docs/` antes de escribir rutas o componentes.
+
+## Nota sobre esta implementación
+
+Esta guía conserva el enunciado original de la actividad. En esta implementación,
+los embeddings se calculan localmente en CPU con Transformers.js y el modelo
+`Xenova/paraphrase-multilingual-MiniLM-L12-v2` (384 dimensiones); no requieren
+`HF_API_TOKEN`. La respuesta final la genera un LLM externo (Gemini o Groq).
+Para los pasos de ejecución, consultar [EJECUTAR.md](./EJECUTAR.md).

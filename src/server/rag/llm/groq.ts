@@ -1,22 +1,13 @@
-import type { LlmClient, LlmRequest } from "./types";
-
-/**
- * TODO (Integrante C): cliente de Groq. Clave en https://console.groq.com/keys
- *
- * Pistas:
- *  - Variables disponibles en `config.llm.groq` (src/server/config.ts): apiKey, model.
- *  - Groq usa una API compatible con OpenAI (verifiquen en https://console.groq.com/docs):
- *      POST https://api.groq.com/openai/v1/chat/completions
- *      Header: Authorization: Bearer <GROQ_API_KEY>
- *      Body:   { model, messages: [{ role: "system" | "user" | "assistant", content }] }
- *      Texto de la respuesta: choices[0].message.content
- *  - El prompt de sistema va como primer mensaje con role "system".
- *
- * Reto: implementar streaming con `stream: true` (llega como Server-Sent Events).
- */
+import { config } from "@/server/config";
+import type { LlmClient } from "./types";
+import { postJson } from "../http";
 export const groqClient: LlmClient = {
-  async generate(request: LlmRequest) {
-    void request;
-    throw new Error("TODO: implementar groqClient.generate() en src/server/rag/llm/groq.ts");
+  async generate(request) {
+    const data = await postJson("https://api.groq.com/openai/v1/chat/completions", { Authorization: "Bearer " + config.llm.groq.apiKey }, {
+      model: config.llm.groq.model, messages: [{ role: "system", content: request.system }, ...request.messages], temperature: 0.2, max_tokens: 1024,
+    }) as { choices?: { message?: { content?: string } }[] };
+    const answer = data.choices?.[0]?.message?.content?.trim();
+    if (!answer) throw new Error("Groq no devolvió texto");
+    return answer;
   },
 };

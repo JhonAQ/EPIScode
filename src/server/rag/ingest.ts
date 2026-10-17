@@ -1,13 +1,20 @@
-/**
- * TODO (Integrantes A + B, en conjunto): ingesta de un documento.
- *
- *   texto -> chunks -> embeddings -> base vectorial
- *
- * Funciones que debe usar: chunkText (./chunker), embedTexts (./embeddings), saveChunks (./store).
- * Debe devolver la cantidad de fragmentos guardados.
- */
+import { chunkText } from "./chunker";
+import { embedTexts } from "./embeddings";
+import { saveChunks, saveCorpus, type PreparedDocument } from "./store";
 export async function ingestDocument(source: string, text: string): Promise<number> {
-  void source;
-  void text;
-  throw new Error("TODO: implementar ingestDocument() en src/server/rag/ingest.ts");
+  const chunks = chunkText(text);
+  if (!chunks.length) throw new Error("Documento vacío: " + source);
+  await saveChunks(source, chunks, await embedTexts(chunks.map(chunk => chunk.content)));
+  return chunks.length;
+}
+
+export async function ingestDocuments(documents: { source: string; text: string }[]): Promise<{ source: string; count: number }[]> {
+  const prepared: PreparedDocument[] = [];
+  for (const { source, text } of documents) {
+    const chunks = chunkText(text);
+    if (!chunks.length) throw new Error("Documento vacío: " + source);
+    prepared.push({ source, chunks, embeddings: await embedTexts(chunks.map(chunk => chunk.content)) });
+  }
+  await saveCorpus(prepared);
+  return prepared.map(({ source, chunks }) => ({ source, count: chunks.length }));
 }

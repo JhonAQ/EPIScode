@@ -1,23 +1,15 @@
-import type { LlmClient, LlmRequest } from "./types";
-
-/**
- * TODO (Integrante C): cliente de Gemini. Clave en https://aistudio.google.com/apikey
- *
- * Pistas:
- *  - Variables disponibles en `config.llm.gemini` (src/server/config.ts): apiKey, model.
- *  - Endpoint (verifiquen en https://ai.google.dev/gemini-api/docs):
- *      POST https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generateContent
- *      Header: x-goog-api-key: <GEMINI_API_KEY>
- *      Body:   { systemInstruction: { parts: [{ text }] },
- *                contents: [{ role: "user" | "model", parts: [{ text }] }] }
- *      Texto de la respuesta: candidates[0].content.parts[0].text
- *  - Ojo: Gemini llama "model" al rol que nosotros llamamos "assistant".
- *
- * Reto: implementar streaming con el método `:streamGenerateContent?alt=sse`.
- */
+import { config } from "@/server/config";
+import type { LlmClient } from "./types";
+import { postJson } from "../http";
 export const geminiClient: LlmClient = {
-  async generate(request: LlmRequest) {
-    void request;
-    throw new Error("TODO: implementar geminiClient.generate() en src/server/rag/llm/gemini.ts");
+  async generate(request) {
+    const data = await postJson("https://generativelanguage.googleapis.com/v1beta/models/" + config.llm.gemini.model + ":generateContent", { "x-goog-api-key": config.llm.gemini.apiKey }, {
+      systemInstruction: { parts: [{ text: request.system }] },
+      contents: request.messages.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] })),
+      generationConfig: { temperature: 0.2, maxOutputTokens: 2048 },
+    }) as { candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[] };
+    const answer = data.candidates?.[0]?.content?.parts?.filter(p => !p.thought).map(p => p.text ?? "").join("").trim();
+    if (!answer) throw new Error("Gemini no devolvió texto");
+    return answer;
   },
 };

@@ -1,36 +1,33 @@
 "use client";
-
-import type { ChatMessage, ChatSource } from "@/types";
-
-/** Mensaje tal como lo pinta la UI: el del API más las fuentes (solo en respuestas del asistente). */
-export interface UiMessage extends ChatMessage {
-  sources?: ChatSource[];
-}
-
-export interface UseChatResult {
-  messages: UiMessage[];
-  loading: boolean;
-  error: string | null;
-  /** Envía una pregunta del usuario y agrega la respuesta a `messages`. */
-  send: (content: string) => Promise<void>;
-}
-
-/**
- * TODO (Integrante D): implementar el estado y la comunicación con el backend.
- *
- * Contrato del endpoint (ya existe en src/app/api/chat/route.ts):
- *   POST /api/chat
- *   body:      { messages: { role: "user" | "assistant", content: string }[] }
- *   respuesta: { success: boolean, data?: { answer: string, sources: ChatSource[] }, error?: string }
- *
- * Qué debe hacer:
- *  - Agregar el mensaje del usuario al historial de inmediato (UI optimista).
- *  - Enviar el historial completo (solo `role` y `content`, sin `sources`).
- *  - Manejar `loading` y `error` (red caída, 400, 500).
- *  - Evitar envíos duplicados mientras `loading` es true.
- *
- * Reto: cuando el backend soporte streaming, ir actualizando el último mensaje token a token.
- */
+import { useRef, useState } from "react";
+import { buildChatRequest } from "@/lib/chat-history";
+import type { ChatMessage, ChatSource, ApiResponse, ChatResponse } from "@/types";
+export interface UiMessage extends ChatMessage { sources?: ChatSource[] }
+export interface UseChatResult { messages: UiMessage[]; loading: boolean; error: string | null; send: (content: string) => Promise<void>; retry: () => Promise<void> }
 export function useChat(): UseChatResult {
-  throw new Error("TODO: implementar useChat() en src/features/chatbot/hooks/useChat.ts");
+  const [messages, setMessages] = useState<UiMessage[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const busy = useRef(false);
+  const pending = useRef<UiMessage[] | null>(null);
+  async function submit(history: UiMessage[]) {
+    if (busy.current) return;
+    busy.current = true; setLoading(true); setError(null); pending.current = history;
+    try {
+      const response = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(buildChatRequest(history)), signal: AbortSignal.timeout(180000) });
+      const result: ApiResponse<ChatResponse> = await response.json();
+      if (!response.ok || !result.success || !result.data) throw new Error(result.error ?? "No se pudo obtener respuesta.");
+      setMessages([...history, { role: "assistant", content: result.data.answer, sources: result.data.sources }]);
+      pending.current = null;
+    } catch (e) { setError(e instanceof Error ? e.message : "Error de conexión."); }
+    finally { busy.current = false; setLoading(false); }
+  }
+  async function send(content: string) {
+    if (busy.current || !content.trim() || content.length > 1000) return;
+    const completed = pending.current ? pending.current.slice(0, -1) : messages;
+    const history: UiMessage[] = [...completed, { role: "user", content: content.trim() }];
+    setMessages(history);
+    await submit(history);
+  }
+  return { messages, loading, error, send, retry: async () => { if (pending.current) await submit(pending.current); } };
 }

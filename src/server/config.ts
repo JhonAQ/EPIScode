@@ -8,6 +8,10 @@ function required(name: string): string {
 }
 
 export const config = {
+  embeddings: {
+    get provider() { return process.env.EMBEDDING_PROVIDER ?? "local"; },
+    get localModel() { return process.env.LOCAL_EMBEDDING_MODEL ?? "Xenova/paraphrase-multilingual-MiniLM-L12-v2"; },
+  },
   get databaseUrl() {
     return required("DATABASE_URL");
   },
@@ -24,7 +28,7 @@ export const config = {
       get apiKey() {
         return required("GEMINI_API_KEY");
       },
-      model: process.env.GEMINI_MODEL ?? "gemini-2.5-flash",
+      model: process.env.GEMINI_MODEL ?? "gemini-flash-latest",
     },
     groq: {
       get apiKey() {

@@ -1,25 +1,16 @@
 "use client";
-
-/**
- * TODO (Integrante D): componer el chat completo.
- *
- * Estructura sugerida (cada pieza en su archivo dentro de esta carpeta):
- *   <ChatWindow>            <- este archivo: usa useChat() y orquesta
- *     <MessageList />       <- lista de mensajes, scroll automático al final
- *       <MessageBubble />   <- burbuja usuario/asistente (estilo distinto, Markdown opcional)
- *       <SourcesList />     <- fuentes colapsables bajo cada respuesta del asistente
- *     <ChatInput />         <- caja de texto + botón enviar (Enter envía, Shift+Enter salto de línea)
- *
- * Estados a contemplar: vacío (sugerir preguntas de ejemplo), cargando ("pensando..."),
- * error (con opción de reintentar) y respuesta sin fuentes.
- *
- * Tienen Tailwind v4 y la utilidad cn() de "@/lib/utils". Diseñen primero en Figma
- * (ver nota en el README sobre components/).
- */
+import { useChat } from "../hooks/useChat";
+import { ChatInput } from "./ChatInput";
+import { MessageList } from "./MessageList";
 export function ChatWindow() {
-  return (
-    <div className="mx-auto w-full max-w-2xl rounded-xl border border-dashed border-zinc-400 p-8 text-center text-sm text-zinc-500">
-      TODO: implementar ChatWindow en src/features/chatbot/components/ChatWindow.tsx
-    </div>
-  );
+  const { messages, loading, error, send, retry } = useChat();
+  return <section className="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-zinc-300 shadow-sm">
+    {!messages.length && <div className="p-6"><h2 className="text-lg font-semibold">Conversa con tu documento</h2>
+      <p className="mt-2 text-sm text-zinc-500">Las respuestas se basan en la documentación cargada y muestran sus fuentes.</p>
+      <div className="mt-4 flex flex-wrap gap-2">{["¿Qué significa RAG?", "¿Para qué sirve el overlap?", "Resume los pasos de la ingesta en orden."].map(q =>
+        <button key={q} disabled={loading} onClick={() => void send(q)} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm hover:bg-indigo-50 hover:text-indigo-900">{q}</button>)}</div></div>}
+    <MessageList messages={messages} loading={loading} />
+    {error && <div role="alert" className="mx-4 mb-4 rounded-lg border border-red-300 p-3 text-sm text-red-600">{error} <button disabled={loading} onClick={() => void retry()} className="ml-2 underline">Reintentar</button></div>}
+    <ChatInput disabled={loading} onSend={content => void send(content)} />
+  </section>;
 }
