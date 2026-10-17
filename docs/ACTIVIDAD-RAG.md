@@ -13,18 +13,18 @@ No hay una única solución correcta: la idea es explorar, medir y decidir con c
 
 ## 2. Qué les dejamos hecho y qué falta
 
-| Ya está listo (infraestructura) | Lo implementan ustedes (busquen los `TODO`) |
-|---|---|
-| `docker-compose.yml` con Postgres + pgvector (y Adminer) | `chunker.ts`: dividir el texto |
-| Esquema SQL (`db/init/01-schema.sql`) | `embeddings.ts`: llamar a Hugging Face |
-| Lectura de variables de entorno (`config.ts`) y pool de Postgres (`db.ts`) | `store.ts`: guardar chunks y buscar por similitud |
-| Tipos compartidos (`src/types/index.ts`) y la interfaz `LlmClient` | `llm/`: clientes de Gemini y Groq y el selector de proveedor |
-| Página `/chat`, `.env.example`, documento y preguntas de ejemplo | `prompt.ts`, `pipeline.ts`, `ingest.ts` y `scripts/ingest.ts` |
-| Scripts `pnpm db:*` e `ingest` (el comando; su lógica es de ustedes) | `api/chat/route.ts`: validación, errores, streaming |
-| | Frontend completo (`src/features/chatbot/`) |
-| | Evaluación y rate limiting |
+El backend sigue una **arquitectura hexagonal** (ver [ARQUITECTURA.md](ARQUITECTURA.md)). Ya hay un flujo de ejemplo
+implementado y probado con adaptadores en memoria; ustedes implementan los **adaptadores reales** y mejoran la lógica.
 
-Cada archivo con `TODO` trae en sus comentarios el contrato, pistas (incluyendo endpoints de las APIs) y preguntas para explorar.
+| Ya está listo | Lo implementan ustedes (busquen los `TODO`) |
+|---|---|
+| `docker-compose.yml` con Postgres + pgvector (y Adminer), esquema SQL | `domain/services/chunker.ts`: mejorar el chunking (nivel 2 y 3) |
+| Dominio: entidades, validación de conversación, chunker nivel 1, prompt básico | `infrastructure/embeddings/huggingface-embedding-provider.ts` |
+| Puertos (`EmbeddingProvider`, `VectorStore`, `LlmClient`) | `infrastructure/persistence/postgres/pg-vector-store.ts` |
+| Casos de uso `IngestDocument` y `AnswerQuestion` (con tests: `pnpm test`) | `infrastructure/llm/gemini-llm-client.ts` y `groq-llm-client.ts` |
+| Selector de proveedor LLM, composition root, `POST /api/chat`, `pnpm ingest` | Mejorar `prompt-builder.ts` y `AnswerQuestion` (historial, streaming) |
+| Adaptadores en memoria (`FakeEmbeddingProvider`, `InMemoryVectorStore`) como referencia | Streaming y rate limiting en la ruta, evaluación |
+| Página `/chat`, `.env.example`, documento y preguntas de ejemplo | Frontend completo (`src/features/chatbot/`) |
 
 Para ver todos los pendientes: `grep -rn "TODO" src scripts` (o la búsqueda de su editor).
 
@@ -32,23 +32,24 @@ Para ver todos los pendientes: `grep -rn "TODO" src scripts` (o la búsqueda de 
 
 ```
 INGESTA  (pnpm ingest)
-  docs/knowledge/*.md ─▶ chunkText ─▶ embedTexts (Hugging Face) ─▶ saveChunks ─▶ Postgres/pgvector
+  docs/knowledge/*.md ─▶ IngestDocument: chunkText ─▶ EmbeddingProvider ─▶ VectorStore ─▶ Postgres/pgvector
 
 CONSULTA (POST /api/chat)
-  pregunta ─▶ embedQuery ─▶ searchSimilar (top-k) ─▶ buildSystemPrompt ─▶ LLM (Gemini/Groq) ─▶ respuesta + fuentes
+  pregunta ─▶ AnswerQuestion: embedQuery ─▶ searchSimilar (top-k) ─▶ buildSystemPrompt ─▶ LlmClient ─▶ respuesta + fuentes
 ```
 
 ```
-scripts/ingest.ts               # CLI de ingesta
-db/init/01-schema.sql           # tabla `chunks` + índice HNSW
-docs/knowledge/                 # documentos base y preguntas de evaluación
-src/app/api/chat/route.ts       # endpoint (validación; streaming = reto)
-src/app/chat/page.tsx           # página /chat
-src/server/config.ts            # variables de entorno
-src/server/db.ts                # pool de Postgres
-src/server/rag/                 # chunker, embeddings, store, prompt, pipeline, ingest
-src/server/rag/llm/             # clientes Gemini y Groq
-src/features/chatbot/           # UI: ChatWindow, MessageList, MessageBubble, SourcesList, ChatInput, useChat
+scripts/ingest.ts                         # CLI de ingesta (adaptador de entrada)
+db/init/01-schema.sql                     # tabla `chunks` + índice HNSW
+docs/knowledge/                           # documentos base y preguntas de evaluación
+src/app/api/chat/route.ts                 # adaptador de entrada HTTP
+src/server/domain/                        # entidades y reglas puras (chunker, prompt, validación)
+src/server/application/ports/             # interfaces: EmbeddingProvider, VectorStore, LlmClient
+src/server/application/use-cases/         # IngestDocument, AnswerQuestion
+src/server/infrastructure/                # adaptadores: Postgres, Hugging Face, Gemini, Groq, en memoria
+src/server/composition/container.ts       # ensambla todo (único lugar que conoce las clases concretas)
+src/server/interface/http/                # validación de la forma del request
+src/features/chatbot/                     # UI: ChatWindow, MessageList, MessageBubble, SourcesList, ChatInput, useChat
 ```
 
 ## 4. Cómo conseguir las API keys (todo gratis)
@@ -94,14 +95,14 @@ Para entrar a la base: Adminer (sistema *PostgreSQL*, servidor `db`, usuario/cla
 
 | | Rol | Archivos principales | Entregable |
 |---|---|---|---|
-| **A** | Ingesta y chunking | `chunker.ts`, `scripts/ingest.ts`, `ingest.ts` (con B) | Documento troceado con criterio, y justificación del tamaño/overlap |
-| **B** | Embeddings y almacenamiento | `embeddings.ts`, `store.ts` (`saveChunks`) | `pnpm ingest` guarda todo; re-ingestar no duplica; manejo de rate limit/reintentos |
-| **C** | LLM, retrieval y prompt | `llm/`, `store.ts` (`searchSimilar`), `prompt.ts`, `pipeline.ts` (con B) | Búsqueda top-k con umbral, prompt que no alucina y responde "no sé", clientes Gemini/Groq |
+| **A** | Ingesta y chunking | `domain/services/chunker.ts`, `scripts/ingest.ts`, caso de uso `IngestDocument` (con B) | Documento troceado con criterio, y justificación del tamaño/overlap |
+| **B** | Embeddings y almacenamiento | `HuggingFaceEmbeddingProvider`, `PgVectorStore.saveChunks` | `pnpm ingest` guarda todo; re-ingestar no duplica; manejo de rate limit/reintentos |
+| **C** | LLM, retrieval y prompt | `infrastructure/llm/`, `PgVectorStore.searchSimilar`, `prompt-builder.ts`, caso de uso `AnswerQuestion` (con B) | Búsqueda top-k con umbral, prompt que no alucina y responde "no sé", clientes Gemini/Groq |
 | **D** | Frontend, endpoint y evaluación | `src/features/chatbot/`, `api/chat/route.ts` | Chat usable con fuentes, validación y errores del endpoint, streaming, y tabla de evaluación |
 
 **Orden recomendado:** A y B avanzan primero (sin ingesta no hay nada que buscar). C puede empezar con los clientes LLM y el prompt (probándolos con un contexto escrito a mano) y luego `searchSimilar` con datos insertados a mano. D puede trabajar el frontend desde el día uno con respuestas falsas (*mock*) en el hook, y conectar al endpoint real después.
 
-Hay dependencias entre roles: acuerden **antes** de empezar las firmas de las funciones (ya están definidas; si las cambian, avisen).
+Hay dependencias entre roles: acuerden **antes** de empezar las firmas de las funciones (son los puertos en `application/ports/`; si las cambian, avisen).
 
 ## 7. Hitos sugeridos
 

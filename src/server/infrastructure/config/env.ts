@@ -19,7 +19,7 @@ export const config = {
     dimensions: Number(process.env.EMBEDDING_DIMENSIONS ?? 384),
   },
   llm: {
-    provider: (process.env.LLM_PROVIDER ?? "gemini") as "gemini" | "groq",
+    provider: process.env.LLM_PROVIDER ?? "gemini",
     gemini: {
       get apiKey() {
         return required("GEMINI_API_KEY");

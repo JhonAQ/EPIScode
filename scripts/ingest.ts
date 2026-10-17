@@ -1,22 +1,35 @@
 /**
- * TODO (Integrante A): script CLI de ingesta. Uso: pnpm ingest
+ * CLI de ingesta. Uso: pnpm ingest
+ * Adaptador de entrada: lee docs/knowledge/*.md|txt y delega en el caso de uso IngestDocument.
  *
- * Qué debe hacer:
- *  - Leer los .md / .txt de docs/knowledge/ (ignorar preguntas-evaluacion.md: no es base de conocimiento).
- *  - Llamar a ingestDocument(nombreArchivo, texto) de "@/server/rag/ingest" por cada archivo.
- *  - Mostrar por consola cuántos fragmentos se guardaron por archivo.
- *  - Cerrar el pool de Postgres al terminar (getPool().end() de "@/server/db"), o el proceso no termina.
- *  - Salir con código distinto de 0 si algo falla.
- *
- * Reto: soportar PDF, o saltarse los archivos que no cambiaron desde la última ingesta.
- *
- * Nota: el comando carga .env.local con `tsx --env-file=.env.local` (ver package.json).
+ * TODO (Integrante A): retos
+ *  - soportar PDF
+ *  - saltarse los archivos que no cambiaron desde la última ingesta
  */
+import { readdir, readFile } from "node:fs/promises";
+import path from "node:path";
+import { getIngestDocument } from "@/server/composition/container";
+import { closePool } from "@/server/infrastructure/persistence/postgres/pool";
+
+const KNOWLEDGE_DIR = path.join(process.cwd(), "docs", "knowledge");
+const IGNORED = new Set(["preguntas-evaluacion.md"]); // es el set de evaluación, no base de conocimiento
+
 async function main() {
-  throw new Error("TODO: implementar scripts/ingest.ts");
+  const files = (await readdir(KNOWLEDGE_DIR)).filter(
+    (f) => /\.(md|txt)$/i.test(f) && !IGNORED.has(f),
+  );
+  const ingest = getIngestDocument();
+
+  for (const file of files) {
+    const text = await readFile(path.join(KNOWLEDGE_DIR, file), "utf8");
+    const count = await ingest.execute({ source: file, text });
+    console.log(`${file}: ${count} fragmentos`);
+  }
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exitCode = 1;
-});
+main()
+  .catch((err) => {
+    console.error(err);
+    process.exitCode = 1;
+  })
+  .finally(closePool);
