@@ -1,22 +1,35 @@
-import type { LlmClient, LlmRequest } from "./types";
+import { config } from "@/server/config";
+import { LlmError, type LlmClient, type LlmRequest } from "./types";
 
 /**
- * TODO (Integrante C): cliente de Groq. Clave en https://console.groq.com/keys
- *
- * Pistas:
- *  - Variables disponibles en `config.llm.groq` (src/server/config.ts): apiKey, model.
- *  - Groq usa una API compatible con OpenAI (verifiquen en https://console.groq.com/docs):
- *      POST https://api.groq.com/openai/v1/chat/completions
- *      Header: Authorization: Bearer <GROQ_API_KEY>
- *      Body:   { model, messages: [{ role: "system" | "user" | "assistant", content }] }
- *      Texto de la respuesta: choices[0].message.content
- *  - El prompt de sistema va como primer mensaje con role "system".
- *
- * Reto: implementar streaming con `stream: true` (llega como Server-Sent Events).
+ * Cliente de Groq (API compatible con OpenAI).
+ * El prompt de sistema viaja como primer mensaje con role "system".
  */
 export const groqClient: LlmClient = {
-  async generate(request: LlmRequest) {
-    void request;
-    throw new Error("TODO: implementar groqClient.generate() en src/server/rag/llm/groq.ts");
+  async generate({ system, messages }: LlmRequest): Promise<string> {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.llm.groq.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: config.llm.groq.model,
+        // El system prompt va primero; luego el historial tal cual.
+        messages: [{ role: "system", content: system }, ...messages],
+      }),
+    });
+
+    if (!response.ok) {
+      throw new LlmError(`Groq respondió ${response.status}`, response.status);
+    }
+
+    const data = await response.json();
+    // La respuesta viene en choices[0].message.content
+    const text = data?.choices?.[0]?.message?.content;
+    if (typeof text !== "string") {
+      throw new LlmError("Groq devolvió una respuesta sin texto", 502);
+    }
+    return text;
   },
 };

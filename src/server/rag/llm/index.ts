@@ -1,11 +1,43 @@
-import type { LlmClient } from "./types";
+import { config } from "@/server/config";
+import { geminiClient } from "./gemini";
+import { groqClient } from "./groq";
+import { LlmError, type LlmClient } from "./types";
 
 export type { LlmClient, LlmRequest } from "./types";
+export { LlmError } from "./types";
+
+/** Status HTTP que indican cuota agotada, key rechazada o servidor caído. */
+const FALLBACK_STATUS = new Set([429, 403, 500, 502, 503]);
 
 /**
- * TODO (Integrante C): devolver el cliente según `config.llm.provider` (LLM_PROVIDER).
- * Agregar otro proveedor = un archivo nuevo + un caso aquí. Lancen un error claro si el valor es inválido.
+ * Envuelve un cliente para que, si falla por cuota o servidor caído,
+ * use el otro proveedor automáticamente. Así Gemini cae a Groq sin que
+ * el pipeline se entere. Otros errores se propagan tal cual.
+ */
+function withFallback(primary: LlmClient, secondary: LlmClient): LlmClient {
+  return {
+    async generate(request) {
+      try {
+        return await primary.generate(request);
+      } catch (error) {
+        if (error instanceof LlmError && FALLBACK_STATUS.has(error.status)) {
+          console.warn(`[llm] ${error.message}: usando el proveedor alternativo`);
+          return secondary.generate(request);
+        }
+        throw error;
+      }
+    },
+  };
+}
+
+/**
+ * Devuelve el cliente según LLM_PROVIDER, con el otro proveedor como respaldo.
+ *   gemini (principal) -> groq (respaldo)
+ *   groq   (principal) -> gemini (respaldo)
  */
 export function getLlm(): LlmClient {
-  throw new Error("TODO: implementar getLlm() en src/server/rag/llm/index.ts");
+  if (config.llm.provider === "groq") {
+    return withFallback(groqClient, geminiClient);
+  }
+  return withFallback(geminiClient, groqClient);
 }

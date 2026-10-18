@@ -1,21 +1,37 @@
 import type { ChatMessage, ChatResponse } from "@/types";
+import { embedQuery } from "./embeddings";
+import { searchSimilar } from "./store";
+import { buildSystemPrompt } from "./prompt";
+import { getLlm } from "./llm";
+
+/** Respuesta fija cuando el documento no tiene fragmentos relevantes. */
+const NO_CONTEXT_ANSWER =
+  "El documento no contiene información suficiente para responder esa pregunta.";
 
 /**
- * TODO (Integrantes B + C, en conjunto): orquestar el flujo RAG de consulta.
- *
- *   pregunta -> embedding -> búsqueda -> prompt con contexto -> LLM -> respuesta + fuentes
- *
- * Funciones que debe usar: embedQuery (./embeddings), searchSimilar (./store),
- * buildSystemPrompt (./prompt) y getLlm (./llm).
- * La pregunta actual es el último mensaje de `messages` (validado en route.ts).
- *
- * Para explorar:
- *  - usar el historial para reformular la pregunta antes de buscar (preguntas de seguimiento)
- *  - qué hacer si `searchSimilar` no devuelve nada (¿llamar igual al LLM?)
- *  - streaming de la respuesta
- *  - cachear embeddings de preguntas repetidas
+ * Orquesta el flujo RAG de consulta:
+ *   pregunta -> embedding -> búsqueda -> (corte) -> prompt -> LLM -> respuesta + fuentes
  */
 export async function answerQuestion(messages: ChatMessage[]): Promise<ChatResponse> {
-  void messages;
-  throw new Error("TODO: implementar answerQuestion() en src/server/rag/pipeline.ts");
+  // La pregunta actual es el último mensaje (route.ts ya validó que es del usuario).
+  const question = messages[messages.length - 1].content;
+
+  // Convierte la pregunta en un vector con el MISMO modelo usado en la ingesta.
+  const queryEmbedding = await embedQuery(question);
+
+  // Busca los fragmentos más similares (ya aplica umbral y top-k internamente).
+  const sources = await searchSimilar(queryEmbedding);
+
+  // ★ Corte sin fuentes: no hay contexto relevante -> NO se llama al LLM
+  //   (0 consumo de la cuota). ★
+  if (sources.length === 0) {
+    return { answer: NO_CONTEXT_ANSWER, sources: [] };
+  }
+
+  // Instrucciones + contexto recuperado, y respuesta del proveedor configurado
+  // (getLlm aplica el fallback Gemini -> Groq si hiciera falta).
+  const system = buildSystemPrompt(sources);
+  const answer = await getLlm().generate({ system, messages });
+
+  return { answer, sources };
 }

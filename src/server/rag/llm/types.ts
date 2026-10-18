@@ -11,3 +11,14 @@ export interface LlmClient {
   /** Respuesta completa (sin streaming). Implementar streaming es parte del reto. */
   generate(request: LlmRequest): Promise<string>;
 }
+
+/**
+ * Error de un proveedor LLM. Lleva el código HTTP (`status`) para que
+ * getLlm() pueda decidir si conviene el fallback (p. ej. 429 = sin cuota).
+ */
+export class LlmError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = "LlmError";
+  }
+}
