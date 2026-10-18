@@ -1,5 +1,6 @@
 import type { LlmClient, LlmRequest } from "./types";
 import { config } from "../../config";
+import { RagDiagnosticError } from "../diagnostics";
 
 // Representa un mensaje enviado al endpoint compatible con OpenAI.
 interface OpenRouterRequestMessage {
@@ -48,7 +49,7 @@ export const openrouterClient: LlmClient = {
     });
 
     if (!response.ok) {
-      throw new Error(`OpenRouter devolvió un error HTTP ${response.status}.`);
+      throw new RagDiagnosticError("llm", { provider: "openrouter", status: response.status });
     }
 
     const result: OpenRouterResponse = await response.json();

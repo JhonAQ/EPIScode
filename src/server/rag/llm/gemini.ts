@@ -1,5 +1,6 @@
 import type { LlmClient, LlmRequest } from "./types";
 import { config } from "../../config";
+import { RagDiagnosticError } from "../diagnostics";
 
 // Representa una parte de texto que se envía en la solicitud a Gemini.
 interface GeminiRequestTextPart {
@@ -91,7 +92,7 @@ export const geminiClient: LlmClient = {
 
     // No intentamos interpretar respuestas de error HTTP como si fueran texto generado.
     if (!response.ok) {
-      throw new Error(`Gemini devolvió un error HTTP ${response.status}.`);
+      throw new RagDiagnosticError("llm", { provider: "gemini", status: response.status });
     }
 
     const result: GeminiResponse = await response.json();

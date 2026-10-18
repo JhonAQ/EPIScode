@@ -1,5 +1,6 @@
 import type { LlmClient, LlmRequest } from "./types";
 import { config } from "../../config";
+import { RagDiagnosticError } from "../diagnostics";
 
 // Representa un mensaje enviado a Groq, con uno de los roles admitidos por su API.
 interface GroqRequestMessage {
@@ -76,7 +77,7 @@ export const groqClient: LlmClient = {
 
     // No interpretamos una respuesta HTTP fallida como si fuera una respuesta del modelo.
     if (!response.ok) {
-      throw new Error(`Groq devolvió un error HTTP ${response.status}.`);
+      throw new RagDiagnosticError("llm", { provider: "groq", status: response.status });
     }
 
     const result: GroqResponse = await response.json();

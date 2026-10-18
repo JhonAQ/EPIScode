@@ -1,5 +1,6 @@
 import { answerQuestion } from "@/server/rag/pipeline";
 import type { ChatMessage } from "@/types";
+import { formatRagDiagnostic } from "@/server/rag/diagnostics";
 
 export const runtime = "nodejs";
 
@@ -107,8 +108,8 @@ export async function POST(request: Request) {
       success: true,
       data: { answer: result.answer, sources: result.sources },
     });
-  } catch {
-    console.error("Falló el procesamiento de la solicitud de chat.");
+  } catch (error) {
+    console.error("Chat request failed", formatRagDiagnostic(error));
     return Response.json({ success: false, error: "No se pudo procesar la solicitud de chat." }, { status: 500 });
   }
 }
