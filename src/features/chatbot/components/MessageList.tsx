@@ -1,13 +1,23 @@
 import type { UiMessage } from "../hooks/useChat";
+import { MessageBubble } from "./MessageBubble";
 
 export interface MessageListProps {
   messages: UiMessage[];
   loading: boolean;
 }
 
-/** TODO (Integrante D): renderizar los mensajes, el indicador de carga y hacer scroll al último. */
+/** Renderiza el historial y anuncia de forma accesible cuándo se espera una respuesta. */
 export function MessageList({ messages, loading }: MessageListProps) {
-  void messages;
-  void loading;
-  throw new Error("TODO: implementar MessageList");
+  return (
+    <ol aria-label="Conversación" className="flex flex-col gap-4 px-4 py-6">
+      {messages.map((message, index) => (
+        <MessageBubble key={`${message.role}-${index}`} message={message} />
+      ))}
+      {loading && (
+        <li role="status" aria-live="polite" className="text-sm text-zinc-600 dark:text-zinc-400">
+          El asistente está preparando una respuesta…
+        </li>
+      )}
+    </ol>
+  );
 }
