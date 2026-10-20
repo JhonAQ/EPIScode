@@ -24,6 +24,8 @@ El código fuente se encuentra organizado bajo una arquitectura modular y escala
 src/
 ├── app/                  # Rutas y páginas de la aplicación (Next.js App Router)
 │   ├── api/health/       # Endpoint de diagnóstico del estado del servidor
+│   ├── api/chat/         # Endpoint del chatbot RAG
+│   ├── chat/             # Página del chatbot
 │   ├── globals.css       # Configuración global de estilos y Tailwind CSS v4
 │   ├── layout.tsx        # Layout raíz
 │   └── page.tsx          # Página principal
@@ -33,9 +35,47 @@ src/
 ├── features/             # Módulos por dominio de negocio (auth, events, students, etc.)
 ├── hooks/                # Hooks personalizados de React
 ├── lib/                  # Utilidades y configuración de clientes (ej. utils.ts para cn())
-├── server/               # Lógica de servidor y servicios de backend
+├── server/               # Backend con arquitectura hexagonal (ver sección siguiente)
+│   ├── domain/           # Entidades y reglas de negocio puras
+│   ├── application/      # Casos de uso (use-cases/) y puertos (ports/)
+│   ├── infrastructure/   # Adaptadores de salida: Postgres, LLMs, embeddings, config
+│   ├── interface/http/   # Validación de la forma de los requests HTTP
+│   └── composition/      # Composition root: ensambla las dependencias
 └── types/                # Interfaces y contratos de tipos en TypeScript
 ```
+
+---
+
+## 🏛️ Arquitectura del Backend
+
+El backend (`src/server/`) sigue una **arquitectura hexagonal (puertos y adaptadores)**. La regla: **las dependencias apuntan hacia adentro**. El dominio no conoce a nadie; la infraestructura conoce al dominio y a los puertos, nunca al revés.
+
+```text
+ ENTRADA                       NÚCLEO                        SALIDA
+ app/api/*/route.ts  ───►  application (casos de uso)  ◄───  Postgres / pgvector
+ scripts/*                  │  ports (interfaces)             Gemini / Groq
+ interface/http/*           │  ┌──────────────┐               Hugging Face
+                            │  │   domain     │               adaptadores in-memory
+                            │  └──────────────┘
+```
+
+| Capa | Responsabilidad | Puede importar |
+|---|---|---|
+| `domain/` | Entidades, errores y servicios puros | nada externo |
+| `application/ports/` | Interfaces de lo que el negocio necesita del exterior | `domain` |
+| `application/use-cases/` | Orquestación de un flujo completo | `domain`, `ports` |
+| `infrastructure/` | Implementaciones reales de los puertos | `domain`, `ports`, librerías |
+| `interface/http/` | Validación de la forma del request | `domain` |
+| `composition/` | Único lugar donde se hace `new` de adaptadores concretos | todo |
+
+**Flujo de una petición** (ejemplo `POST /api/chat`): `route.ts` → `parseChatRequest` (forma) → `AnswerQuestion.execute` (reglas y orquestación vía puertos) → `ApiResponse<ChatResponse>`. La ruta no contiene lógica de negocio.
+
+**Ventajas para el equipo:**
+- Los casos de uso se prueban sin red ni base de datos usando adaptadores en memoria (`pnpm test`).
+- Un módulo nuevo empieza con su puerto y un adaptador en memoria; el frontend consume el endpoint desde el primer día y Postgres se conecta después sin tocar el caso de uso.
+- Cambiar de proveedor (LLM, base vectorial) solo afecta a `infrastructure/` y `composition/`.
+
+👉 **Guía completa, convenciones y cómo agregar un módulo en [docs/ARQUITECTURA.md](./docs/ARQUITECTURA.md)**.
 
 ---
 
@@ -75,6 +115,14 @@ src/
 - `pnpm build`: Compila la aplicación para producción.
 - `pnpm start`: Inicia el servidor compilado de producción.
 - `pnpm lint`: Ejecuta el análisis estático de código con ESLint.
+- `pnpm test`: Ejecuta las pruebas de dominio y casos de uso (sin red ni BD).
+
+---
+
+## 🤖 Actividad: Chatbot con RAG
+
+Actividad exploratoria con Postgres + pgvector (Docker), embeddings de Hugging Face y LLM Gemini/Groq.
+👉 **Guía completa: [docs/ACTIVIDAD-RAG.md](./docs/ACTIVIDAD-RAG.md)**
 
 ---
 
