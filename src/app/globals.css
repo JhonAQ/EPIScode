@@ -2,25 +2,64 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #18181b;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  /* ==========================================================================
+     TOKENS INSTITUCIONALES - ESCUELA PROFESIONAL DE INGENIERÍA DE SISTEMAS
+     Extraídos fielmente del sistema de diseño en Figma (UNSA)
+     ========================================================================== */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Colores Corporativos: Granate / Maroon UNSA */
+  --color-epis-maroon: #5b0813;
+  --color-epis-maroon-hover: #450b12;
+  --color-epis-maroon-light: #fbf3f4;
+  --color-epis-maroon-dark: #3a050c;
+  --color-epis-maroon-border: #7e454d;
+
+  /* Acento Institucional: Dorado / Oro */
+  --color-epis-gold: #c59b27;
+  --color-epis-gold-light: #fef9ee;
+
+  /* Superficies y Fondos */
+  --color-surface-card: #ffffff;
+  --color-surface-muted: #f8f6f5;
+  --color-surface-subtle: #f4f4f5;
+
+  /* Textos Semánticos */
+  --color-text-main: #18181b;
+  --color-text-muted: #71717a;
+  --color-text-subtle: #a1a1aa;
+
+  /* Bordes Suaves (Evitar bordes duros según reglas de UI) */
+  --color-border-subtle: #e4e4e7;
+  --color-border-focus: #5b0813;
+
+  /* Estados e Indicadores */
+  --color-status-online: #10b981;
+  --color-status-success: #15803d;
+  --color-status-warning: #b45309;
+  --color-status-error: #dc2626;
+
+  /* Sombras y Elevaciones Suaves */
+  --shadow-card-soft: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-card-hover: 0 10px 25px -5px rgba(91, 8, 19, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  --shadow-widget: 0 12px 32px rgba(91, 8, 19, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  /* Radios de Esquinas */
+  --radius-pill: 9999px;
+  --radius-card: 1rem;
+  --radius-modal: 1.5rem;
+
+  /* Tipografía */
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
