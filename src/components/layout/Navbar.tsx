@@ -74,7 +74,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-[0_2px_14px_rgba(0,0,0,0.06)] border-b border-zinc-100 transition-all duration-200">
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
+      <div className="w-full max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-16">
         <div className="flex items-center justify-between h-20">
           {/* Brand Logo EPIS - UNSA (Fiel a uploaded_media_0 y Figma) */}
           <Link

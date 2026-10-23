@@ -16,53 +16,70 @@ import { Button } from "@/components/ui/Button";
  * 2. Cero emojis como iconos; usar únicamente SVGs vectoriales nativos accesibles.
  * 3. Prohibido el uso de `border-left` acentuado según las reglas de diseño globales.
  * 4. Componentes atómicos se importan desde `@/components/ui`.
+ * 5. El ancho máximo del contenedor principal es `max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-16`.
  */
 export function HeroSection() {
   return (
-    <section className="relative w-full overflow-hidden bg-white py-12 sm:py-16 lg:py-20 xl:py-24">
-      {/* Contenedor responsivo amplio para resoluciones modernas */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+    <section className="relative w-full overflow-hidden bg-white py-10 sm:py-14 lg:py-16">
+      {/* Contenedor responsivo con padding horizontal balanceado acorde a Figma */}
+      <div className="w-full max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
           {/* ================================================================
               COLUMNA IZQUIERDA: Titular, propuesta de valor y llamada a la acción
               ================================================================ */}
-          <div className="lg:col-span-7 space-y-6 lg:space-y-8 relative z-10 text-left">
+          <div className="lg:col-span-7 space-y-6 lg:space-y-7 relative z-10 text-left">
             
-            {/* Detalle decorativo de esquina institucional (punto y trazo angular) */}
+            {/* Detalle decorativo institucional: Trazo horizontal, diagonal a 45° y vertical con punto */}
             <div
-              className="absolute -left-6 -top-3 hidden xl:block pointer-events-none select-none"
+              className="absolute -left-7 -top-4 hidden sm:block pointer-events-none select-none"
               aria-hidden="true"
             >
-              <div className="w-1.5 h-1.5 rounded-full bg-epis-maroon ml-8" />
-              <div className="w-8 h-24 border-t border-l border-epis-maroon/70 rounded-tl-lg mt-0.5" />
+              <svg
+                width="68"
+                height="145"
+                viewBox="0 0 68 145"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                {/* Dot */}
+                <circle cx="62" cy="12" r="3" fill="#6E1122" />
+                {/* Polyline: Horizontal -> Diagonal 45° -> Vertical */}
+                <path
+                  d="M 62 12 L 38 12 L 12 38 L 12 140"
+                  stroke="#6E1122"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="miter"
+                />
+              </svg>
             </div>
 
             {/* Badge superior de pertenencia facultativa */}
-            <div className="inline-flex items-center px-4 py-1.5 rounded-full border border-zinc-200/80 bg-white shadow-xs">
+            <div className="inline-flex items-center px-4 py-1.5 rounded-full border border-zinc-200/90 bg-white shadow-xs">
               <span className="text-[11px] sm:text-xs font-semibold tracking-wider text-zinc-700 uppercase">
                 Facultad de Ingeniería de Producción y Servicios
               </span>
             </div>
 
-            {/* Titular Principal Institucional con contraste de color */}
-            <h1 className="text-5xl sm:text-6xl xl:text-7xl font-extrabold tracking-tight leading-[1.08] text-zinc-900">
+            {/* Titular Principal Institucional con contraste tipográfico */}
+            <h1 className="text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.08] text-zinc-900">
               <span className="block">Ingeniería de</span>
               <span className="block text-epis-maroon">Sistemas</span>
             </h1>
 
             {/* Subtítulo / Propuesta de valor */}
-            <p className="text-lg sm:text-xl text-zinc-600 font-normal leading-relaxed max-w-xl">
+            <p className="text-base sm:text-lg text-zinc-600 font-normal leading-relaxed max-w-lg">
               Tecnología, innovación y personas para un mejor mañana.
             </p>
 
             {/* Fila de acción: Botón CTA y micro-descripción */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 pt-2">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 pt-1">
               <Link href="/institucional">
                 <Button
                   variant="primary"
                   size="lg"
-                  className="rounded-full px-7 py-3.5 text-base font-semibold shadow-md hover:shadow-lg transition-all gap-2"
+                  className="rounded-full px-7 py-3 text-sm font-semibold shadow-md hover:shadow-lg transition-all gap-2"
                   rightIcon={
                     <svg
                       className="w-4 h-4 transition-transform group-hover:translate-x-0.5"
@@ -85,35 +102,35 @@ export function HeroSection() {
                 </Button>
               </Link>
 
-              {/* Separador vertical discreto */}
-              <div className="hidden sm:block h-10 w-[1.5px] bg-epis-maroon/20 mx-1 shrink-0" />
+              {/* Separador vertical */}
+              <div className="hidden sm:block h-9 w-[1.5px] bg-epis-maroon/20 mx-1 shrink-0" />
 
               {/* Mensaje complementario */}
-              <p className="text-xs sm:text-sm text-zinc-500 max-w-[220px] leading-snug">
+              <p className="text-xs sm:text-sm text-zinc-500 max-w-[210px] leading-snug">
                 Soluciones digitales para un mundo en constante transformación.
               </p>
             </div>
           </div>
 
           {/* ================================================================
-              COLUMNA DERECHA: Composición gráfica con estudiante y anillos
+              COLUMNA DERECHA: Composición gráfica compacta y proporcionada
               ================================================================ */}
           <div className="lg:col-span-5 flex justify-center items-center relative">
-            <div className="relative w-full max-w-[440px] sm:max-w-[480px] lg:max-w-[520px] aspect-[4/5] flex items-center justify-center">
+            <div className="relative w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[400px] aspect-[4/5] flex items-center justify-center">
               
               {/* Anillos concéntricos institucionales de fondo */}
               <div
                 className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
                 aria-hidden="true"
               >
-                <div className="w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] rounded-full border border-epis-maroon/25" />
-                <div className="absolute w-[380px] h-[380px] sm:w-[420px] sm:h-[420px] rounded-full border border-epis-maroon/15" />
-                <div className="absolute w-[480px] h-[480px] sm:w-[520px] sm:h-[520px] rounded-full border border-epis-maroon/10" />
+                <div className="w-[220px] h-[220px] sm:w-[250px] sm:h-[250px] rounded-full border border-epis-maroon/20" />
+                <div className="absolute w-[300px] h-[300px] sm:w-[340px] sm:h-[340px] rounded-full border border-epis-maroon/15" />
+                <div className="absolute w-[380px] h-[380px] sm:w-[420px] sm:h-[420px] rounded-full border border-epis-maroon/10" />
               </div>
 
               {/* Bloque geométrico superior izquierdo */}
               <div
-                className="absolute top-10 left-2 sm:left-4 w-28 h-20 sm:w-36 sm:h-24 bg-epis-maroon rounded-xl opacity-90 shadow-sm z-0 flex items-center justify-center"
+                className="absolute top-8 left-1 sm:left-3 w-24 h-16 sm:w-28 sm:h-20 bg-epis-maroon rounded-lg opacity-90 shadow-sm z-0 flex items-center justify-center"
                 aria-hidden="true"
               >
                 <span className="text-white/40 text-xs font-mono font-light select-none">
@@ -123,7 +140,7 @@ export function HeroSection() {
 
               {/* Bloque geométrico inferior derecho */}
               <div
-                className="absolute bottom-6 right-2 sm:right-4 w-24 h-36 sm:w-32 sm:h-44 bg-epis-maroon rounded-xl opacity-95 shadow-sm z-0 flex items-center justify-center"
+                className="absolute bottom-4 right-1 sm:right-3 w-20 h-28 sm:w-24 sm:h-36 bg-epis-maroon rounded-lg opacity-95 shadow-sm z-0 flex items-center justify-center"
                 aria-hidden="true"
               >
                 <span className="text-white/40 text-xs font-mono font-light select-none">
@@ -131,15 +148,15 @@ export function HeroSection() {
                 </span>
               </div>
 
-              {/* Fotografía del estudiante recortada desde /assets/hero-student.png */}
+              {/* Fotografía del estudiante compacta y nítida */}
               <div className="relative z-10 w-full h-full flex items-end justify-center">
                 <Image
                   src="/assets/hero-student.png"
                   alt="Estudiante de la Escuela Profesional de Ingeniería de Sistemas - UNSA"
-                  width={520}
-                  height={620}
+                  width={400}
+                  height={500}
                   priority
-                  className="w-auto h-[90%] sm:h-[95%] object-contain select-none pointer-events-none drop-shadow-xs"
+                  className="w-auto h-[88%] sm:h-[92%] object-contain select-none pointer-events-none"
                 />
               </div>
 

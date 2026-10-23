@@ -6,7 +6,7 @@ export function Footer() {
   return (
     <footer className="w-full bg-epis-maroon text-white">
       {/* Main Footer Container - Compact & proportional spacing */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 py-8 lg:py-10">
+      <div className="w-full max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-16 py-8 lg:py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8">
           {/* Column 1 & 2: Institutional Brand & Description */}
           <div className="lg:col-span-2 space-y-3">
