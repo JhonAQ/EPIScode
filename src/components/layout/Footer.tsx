@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="w-full bg-[#180306] text-white border-t border-[#31070e]">
+    <footer className="w-full bg-[#190408] text-white">
       {/* Main Footer Container (Spacious width on large screens) */}
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 py-14 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-12">
