@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { SearchInput } from "@/components/ui/SearchInput";
@@ -72,47 +73,45 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-border-subtle transition-all duration-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-[0_2px_14px_rgba(0,0,0,0.06)] border-b border-zinc-100 transition-all duration-200">
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
         <div className="flex items-center justify-between h-20">
-          {/* Brand Logo EPIS - UNSA */}
+          {/* Brand Logo EPIS - UNSA (Fiel a uploaded_media_0 y Figma) */}
           <Link
             href="/"
             className="flex items-center gap-3 shrink-0 group py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-epis-maroon rounded-lg"
           >
-            {/* 4-quadrant EPIS Icon */}
-            <div className="grid grid-cols-2 gap-1 w-7 h-7 shrink-0 text-epis-maroon">
-              <span className="w-3 h-3 bg-epis-maroon rounded-[3px] group-hover:scale-95 transition-transform" />
-              <span className="w-3 h-3 bg-epis-maroon rounded-[3px] group-hover:scale-95 transition-transform" />
-              <span className="w-3 h-3 bg-epis-maroon rounded-[3px] group-hover:scale-95 transition-transform" />
-              <span className="w-3 h-3 bg-epis-maroon rounded-[3px] group-hover:scale-95 transition-transform" />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold tracking-tight text-text-main">
-                EPIS
-              </span>
-              <span className="bg-epis-maroon-light text-epis-maroon text-[11px] font-semibold px-2 py-0.5 rounded-full border border-epis-maroon/10">
-                UNSA
-              </span>
+            {/* Official EPIS Emblem from /assets */}
+            <div className="relative h-9 w-[130px] shrink-0 flex items-center">
+              <Image
+                src="/assets/logo-epis.png"
+                alt="Escuela Profesional de Ingeniería de Sistemas"
+                width={130}
+                height={36}
+                priority
+                className="h-full w-auto object-contain"
+              />
             </div>
 
             {/* Vertical Separator */}
-            <div className="hidden md:block h-8 w-[1px] bg-zinc-300 mx-1" />
+            <div className="h-9 w-[1px] bg-zinc-300 mx-1 shrink-0" />
 
-            {/* Subtext */}
-            <div className="hidden md:flex flex-col text-left">
-              <span className="text-[11px] text-text-muted leading-tight">
-                Escuela Profesional de
+            {/* Plain Institutional Typography (UNSA is text, NOT a pill tag) */}
+            <div className="flex flex-col text-left justify-center select-none leading-tight">
+              <span className="text-[13px] font-semibold text-zinc-900 tracking-tight">
+                Escuela Profesional
               </span>
-              <span className="text-xs font-semibold text-text-main leading-tight">
-                Ingeniería de Sistemas
+              <span className="text-[12px] font-normal text-zinc-600">
+                de Ingeniería de Sistemas
+              </span>
+              <span className="text-[12px] font-bold text-zinc-700 tracking-wider uppercase">
+                UNSA
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2">
+          <nav className="hidden lg:flex items-center space-x-1 xl:space-x-3">
             {NAV_ITEMS.map((item) => {
               const active = isItemActive(item);
               const hasDropdown = Boolean(item.dropdown && item.dropdown.length > 0);
@@ -157,7 +156,7 @@ export function Navbar() {
                     )}
                     {/* Active Underline Indicator */}
                     {active && (
-                      <span className="absolute bottom-0 left-3.5 right-3.5 h-0.5 bg-epis-maroon rounded-full" />
+                      <span className="absolute bottom-0 left-3.5 right-3.5 h-[2.5px] bg-epis-maroon rounded-full" />
                     )}
                   </Link>
 
@@ -165,15 +164,15 @@ export function Navbar() {
                   {hasDropdown && isOpen && (
                     <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-72 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
                       {/* Triangle Pointer */}
-                      <div className="w-3 h-3 bg-surface-card rotate-45 border-t border-l border-border-subtle/50 mx-auto -mb-1.5 shadow-sm" />
+                      <div className="w-3 h-3 bg-surface-card rotate-45 border-t border-l border-zinc-200 mx-auto -mb-1.5 shadow-sm" />
 
-                      <div className="bg-surface-card rounded-2xl shadow-card-hover border border-border-subtle/60 p-2.5 backdrop-blur-sm">
+                      <div className="bg-surface-card rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.08)] border border-zinc-100 p-2.5">
                         {item.dropdown?.map((subItem) => (
                           <Link
                             key={subItem.title}
                             href={subItem.href}
                             onClick={() => setActiveDropdown(null)}
-                            className="block p-3 rounded-xl hover:bg-epis-maroon-light/50 transition-colors group text-left"
+                            className="block p-3 rounded-xl hover:bg-epis-maroon-light/60 transition-colors group text-left"
                           >
                             <div className="font-semibold text-sm text-text-main group-hover:text-epis-maroon transition-colors">
                               {subItem.title}
@@ -192,7 +191,7 @@ export function Navbar() {
           </nav>
 
           {/* Right Action Icons & Login Button */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-4">
             {/* Search Trigger */}
             <div className="relative">
               {searchOpen ? (
@@ -214,7 +213,7 @@ export function Navbar() {
                   type="button"
                   onClick={() => setSearchOpen(true)}
                   aria-label="Abrir buscador"
-                  className="p-2 text-text-muted hover:text-epis-maroon hover:bg-surface-subtle rounded-full transition-colors cursor-pointer"
+                  className="p-2 text-zinc-500 hover:text-epis-maroon hover:bg-zinc-100 rounded-full transition-colors cursor-pointer"
                 >
                   <svg
                     className="w-5 h-5"
@@ -235,11 +234,11 @@ export function Navbar() {
               )}
             </div>
 
-            {/* Login Gestores Button */}
+            {/* Login Gestores Button in primary maroon (#6E1122) */}
             <Button
               variant="primary"
               size="md"
-              className="gap-2 px-5 font-semibold"
+              className="gap-2 px-5 font-semibold text-sm shadow-sm"
               rightIcon={
                 <svg
                   className="w-4 h-4"
@@ -268,7 +267,7 @@ export function Navbar() {
               type="button"
               onClick={() => setSearchOpen(!searchOpen)}
               aria-label="Buscar"
-              className="p-2 text-text-muted hover:text-text-main rounded-lg"
+              className="p-2 text-zinc-600 hover:text-text-main rounded-lg"
             >
               <svg
                 className="w-5 h-5"
@@ -291,7 +290,7 @@ export function Navbar() {
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
-              className="p-2 text-text-muted hover:text-text-main rounded-lg focus:outline-none focus:ring-2 focus:ring-epis-maroon"
+              className="p-2 text-zinc-600 hover:text-text-main rounded-lg focus:outline-none focus:ring-2 focus:ring-epis-maroon"
             >
               {mobileMenuOpen ? (
                 <svg
@@ -346,7 +345,7 @@ export function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-border-subtle bg-surface-card px-4 pt-4 pb-6 space-y-3">
+        <div className="lg:hidden border-t border-zinc-100 bg-white px-4 pt-4 pb-6 space-y-3 shadow-lg">
           <nav className="flex flex-col space-y-1">
             {NAV_ITEMS.map((item) => {
               const active = isItemActive(item);
@@ -361,7 +360,7 @@ export function Navbar() {
                       "px-3 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center justify-between",
                       active
                         ? "bg-epis-maroon-light text-epis-maroon font-semibold"
-                        : "text-text-main hover:bg-surface-subtle"
+                        : "text-text-main hover:bg-zinc-50"
                     )}
                   >
                     <span>{item.label}</span>
@@ -375,7 +374,7 @@ export function Navbar() {
                           key={subItem.title}
                           href={subItem.href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="block px-3 py-2 rounded-lg text-xs text-text-muted hover:text-epis-maroon hover:bg-surface-subtle transition-colors"
+                          className="block px-3 py-2 rounded-lg text-xs text-text-muted hover:text-epis-maroon hover:bg-zinc-50 transition-colors"
                         >
                           <div className="font-semibold text-text-main">
                             {subItem.title}
@@ -392,7 +391,7 @@ export function Navbar() {
             })}
           </nav>
 
-          <div className="pt-2 border-t border-border-subtle">
+          <div className="pt-2 border-t border-zinc-100">
             <Button
               variant="primary"
               size="md"

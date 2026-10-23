@@ -1,58 +1,54 @@
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="w-full bg-[#1e0306] text-white border-t border-epis-maroon-dark">
-      {/* Main Footer Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
+    <footer className="w-full bg-[#180306] text-white border-t border-[#31070e]">
+      {/* Main Footer Container (Spacious width on large screens) */}
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 py-14 lg:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-12">
           {/* Column 1 & 2: Institutional Brand & Description */}
-          <div className="lg:col-span-2 space-y-5">
+          <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="inline-flex items-center gap-3 group">
-              {/* 4-quadrant EPIS Icon in Gold/White */}
-              <div className="grid grid-cols-2 gap-1 w-7 h-7 shrink-0">
-                <span className="w-3 h-3 bg-epis-gold rounded-[3px]" />
-                <span className="w-3 h-3 bg-white/90 rounded-[3px]" />
-                <span className="w-3 h-3 bg-white/90 rounded-[3px]" />
-                <span className="w-3 h-3 bg-epis-gold rounded-[3px]" />
+              {/* Official Emblem in Monochrome White for Dark Background */}
+              <div className="relative h-9 w-[130px] shrink-0 flex items-center">
+                <Image
+                  src="/assets/logo-epis.png"
+                  alt="Escuela Profesional de Ingeniería de Sistemas"
+                  width={130}
+                  height={36}
+                  className="h-full w-auto object-contain brightness-0 invert opacity-95 group-hover:opacity-100 transition-opacity"
+                />
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-bold tracking-tight text-white">
-                  EPIS
+              {/* Vertical Separator */}
+              <div className="h-9 w-[1px] bg-white/20 mx-1 shrink-0" />
+
+              {/* Institutional Typography without tags */}
+              <div className="flex flex-col text-left justify-center select-none leading-tight">
+                <span className="text-[13px] font-semibold text-white tracking-tight">
+                  Escuela Profesional
                 </span>
-                <span className="bg-epis-gold/20 text-epis-gold border border-epis-gold/30 text-[11px] font-semibold px-2 py-0.5 rounded-full">
+                <span className="text-[12px] font-normal text-zinc-300">
+                  de Ingeniería de Sistemas
+                </span>
+                <span className="text-[12px] font-bold text-zinc-300 tracking-wider uppercase">
                   UNSA
                 </span>
               </div>
             </Link>
 
-            <p className="text-sm text-zinc-300 leading-relaxed max-w-sm">
+            <p className="text-sm text-zinc-300 leading-relaxed max-w-md pt-1">
               Escuela Profesional de Ingeniería de Sistemas de la Universidad
-              Nacional de San Agustín de Arequipa. Formando líderes globales en
-              tecnología, innovación y desarrollo de software.
+              Nacional de San Agustín de Arequipa. Formando líderes en tecnología,
+              investigación e innovación para resolver problemas de impacto social.
             </p>
 
-            {/* Accreditation Badge */}
-            <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-zinc-300">
-              <svg
-                className="w-4 h-4 text-epis-gold shrink-0"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                />
-              </svg>
-              <span>Programa Acreditado ICACIT &amp; SINEACE</span>
-            </div>
+            {/* Clean Institutional Accreditation Reference (NO AI badges/tags) */}
+            <p className="text-xs text-zinc-400 font-medium tracking-wide">
+              Programa acreditado nacional e internacionalmente por ICACIT y SINEACE.
+            </p>
 
             {/* Social Links with SVG Vectors (Zero Emojis) */}
             <div className="flex items-center space-x-3 pt-2">
@@ -203,7 +199,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Column 5: Contacto & Ubicación */}
+          {/* Column 5: Ubicación y Contacto */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold text-white tracking-wider uppercase">
               Ubicación
