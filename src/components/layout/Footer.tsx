@@ -4,64 +4,63 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="w-full bg-[#190408] text-white">
-      {/* Main Footer Container (Spacious width on large screens) */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 py-14 lg:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-12">
+    <footer className="w-full bg-epis-maroon text-white">
+      {/* Main Footer Container - Compact & proportional spacing */}
+      <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 py-8 lg:py-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8">
           {/* Column 1 & 2: Institutional Brand & Description */}
-          <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="inline-flex items-center gap-3 group">
-              {/* Official Emblem in Monochrome White for Dark Background */}
-              <div className="relative h-9 w-[130px] shrink-0 flex items-center">
+          <div className="lg:col-span-2 space-y-3">
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
+              {/* Official Logo on crisp white container to preserve original brand colors */}
+              <div className="bg-white px-2.5 py-1 rounded-lg inline-flex items-center shadow-xs shrink-0">
                 <Image
                   src="/assets/logo-epis.png"
                   alt="Escuela Profesional de Ingeniería de Sistemas"
-                  width={130}
-                  height={36}
-                  className="h-full w-auto object-contain brightness-0 invert opacity-95 group-hover:opacity-100 transition-opacity"
+                  width={115}
+                  height={32}
+                  className="h-6 sm:h-7 w-auto object-contain"
                 />
               </div>
 
               {/* Vertical Separator */}
-              <div className="h-9 w-[1px] bg-white/20 mx-1 shrink-0" />
+              <div className="h-7 w-[1px] bg-white/25 mx-0.5 shrink-0" />
 
               {/* Institutional Typography without tags */}
               <div className="flex flex-col text-left justify-center select-none leading-tight">
-                <span className="text-[13px] font-semibold text-white tracking-tight">
+                <span className="text-xs font-semibold text-white tracking-tight">
                   Escuela Profesional
                 </span>
-                <span className="text-[12px] font-normal text-zinc-300">
+                <span className="text-[11px] font-normal text-white/85">
                   de Ingeniería de Sistemas
                 </span>
-                <span className="text-[12px] font-bold text-zinc-300 tracking-wider uppercase">
+                <span className="text-[11px] font-bold text-white tracking-wider uppercase">
                   UNSA
                 </span>
               </div>
             </Link>
 
-            <p className="text-sm text-zinc-300 leading-relaxed max-w-md pt-1">
+            <p className="text-xs text-white/80 leading-relaxed max-w-sm">
               Escuela Profesional de Ingeniería de Sistemas de la Universidad
               Nacional de San Agustín de Arequipa. Formando líderes en tecnología,
-              investigación e innovación para resolver problemas de impacto social.
+              investigación e innovación.
             </p>
 
-            {/* Clean Institutional Accreditation Reference (NO AI badges/tags) */}
-            <p className="text-xs text-zinc-400 font-medium tracking-wide">
+            <p className="text-[11px] text-white/70 font-medium">
               Programa acreditado nacional e internacionalmente por ICACIT y SINEACE.
             </p>
 
-            {/* Social Links with SVG Vectors (Zero Emojis) */}
-            <div className="flex items-center space-x-3 pt-2">
+            {/* Social Links with SVG Vectors (Compact) */}
+            <div className="flex items-center space-x-2 pt-1">
               {/* Facebook */}
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Facebook institucional EPIS UNSA"
-                className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white transition-colors"
+                className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               >
                 <svg
-                  className="w-4 h-4 fill-current"
+                  className="w-3.5 h-3.5 fill-current"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                 >
@@ -75,10 +74,10 @@ export function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="LinkedIn oficial EPIS UNSA"
-                className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white transition-colors"
+                className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               >
                 <svg
-                  className="w-4 h-4 fill-current"
+                  className="w-3.5 h-3.5 fill-current"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                 >
@@ -92,10 +91,10 @@ export function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Repositorio GitHub de EPIScode"
-                className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white transition-colors"
+                className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               >
                 <svg
-                  className="w-4 h-4 fill-current"
+                  className="w-3.5 h-3.5 fill-current"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                 >
@@ -106,15 +105,15 @@ export function Footer() {
           </div>
 
           {/* Column 3: Enlaces Rápidos */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-white tracking-wider uppercase">
+          <div className="space-y-2.5">
+            <h4 className="text-xs font-semibold text-white tracking-wider uppercase">
               Enlaces Rápidos
             </h4>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-1.5 text-xs">
               <li>
                 <Link
                   href="/"
-                  className="text-zinc-300 hover:text-white transition-colors"
+                  className="text-white/80 hover:text-white transition-colors"
                 >
                   Inicio
                 </Link>
@@ -122,7 +121,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/institucional"
-                  className="text-zinc-300 hover:text-white transition-colors"
+                  className="text-white/80 hover:text-white transition-colors"
                 >
                   Institucional
                 </Link>
@@ -130,7 +129,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/academica/mallas"
-                  className="text-zinc-300 hover:text-white transition-colors"
+                  className="text-white/80 hover:text-white transition-colors"
                 >
                   Mallas Curriculares
                 </Link>
@@ -138,7 +137,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/academica/repositorio"
-                  className="text-zinc-300 hover:text-white transition-colors"
+                  className="text-white/80 hover:text-white transition-colors"
                 >
                   Repositorio Académico
                 </Link>
@@ -146,7 +145,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/novedades"
-                  className="text-zinc-300 hover:text-white transition-colors"
+                  className="text-white/80 hover:text-white transition-colors"
                 >
                   Novedades y Eventos
                 </Link>
@@ -155,15 +154,15 @@ export function Footer() {
           </div>
 
           {/* Column 4: Académico y Servicios */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-white tracking-wider uppercase">
+          <div className="space-y-2.5">
+            <h4 className="text-xs font-semibold text-white tracking-wider uppercase">
               Académico
             </h4>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-1.5 text-xs">
               <li>
                 <Link
                   href="/comunidad"
-                  className="text-zinc-300 hover:text-white transition-colors"
+                  className="text-white/80 hover:text-white transition-colors"
                 >
                   Directorio Docente
                 </Link>
@@ -173,7 +172,7 @@ export function Footer() {
                   href="https://sisacad.unsa.edu.pe"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-zinc-300 hover:text-white transition-colors"
+                  className="text-white/80 hover:text-white transition-colors"
                 >
                   Portal SISACAD
                 </a>
@@ -183,7 +182,7 @@ export function Footer() {
                   href="https://biblioteca.unsa.edu.pe"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-zinc-300 hover:text-white transition-colors"
+                  className="text-white/80 hover:text-white transition-colors"
                 >
                   Biblioteca Central
                 </a>
@@ -191,7 +190,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/contacto"
-                  className="text-zinc-300 hover:text-white transition-colors"
+                  className="text-white/80 hover:text-white transition-colors"
                 >
                   Mesa de Partes
                 </Link>
@@ -200,14 +199,14 @@ export function Footer() {
           </div>
 
           {/* Column 5: Ubicación y Contacto */}
-          <div className="space-y-4">
-            <h4 className="text-sm font-semibold text-white tracking-wider uppercase">
+          <div className="space-y-2.5">
+            <h4 className="text-xs font-semibold text-white tracking-wider uppercase">
               Ubicación
             </h4>
-            <div className="space-y-3 text-sm text-zinc-300 leading-relaxed">
-              <div className="flex items-start gap-2.5">
+            <div className="space-y-2 text-xs text-white/80 leading-relaxed">
+              <div className="flex items-start gap-2">
                 <svg
-                  className="w-4 h-4 text-epis-gold mt-1 shrink-0"
+                  className="w-3.5 h-3.5 text-epis-gold mt-0.5 shrink-0"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -232,9 +231,9 @@ export function Footer() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2">
                 <svg
-                  className="w-4 h-4 text-epis-gold shrink-0"
+                  className="w-3.5 h-3.5 text-epis-gold shrink-0"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -255,12 +254,12 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar: Copyright & Legal */}
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
+        <div className="mt-8 pt-4 border-t border-white/15 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/70">
           <p>
             &copy; {new Date().getFullYear()} Escuela Profesional de Ingeniería
             de Sistemas &mdash; Universidad Nacional de San Agustín de Arequipa.
           </p>
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-5">
             <Link
               href="/contacto"
               className="hover:text-white transition-colors"
