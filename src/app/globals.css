@@ -12,11 +12,11 @@
      ========================================================================== */
 
   /* Colores Corporativos: Granate / Maroon UNSA */
-  --color-epis-maroon: #5b0813;
-  --color-epis-maroon-hover: #450b12;
-  --color-epis-maroon-light: #fbf3f4;
-  --color-epis-maroon-dark: #3a050c;
-  --color-epis-maroon-border: #7e454d;
+  --color-epis-maroon: #6E1122;
+  --color-epis-maroon-hover: #580d1b;
+  --color-epis-maroon-light: #fbf2f4;
+  --color-epis-maroon-dark: #190408;
+  --color-epis-maroon-border: #8e1a30;
 
   /* Acento Institucional: Dorado / Oro */
   --color-epis-gold: #c59b27;
@@ -34,7 +34,7 @@
 
   /* Bordes Suaves (Evitar bordes duros según reglas de UI) */
   --color-border-subtle: #e4e4e7;
-  --color-border-focus: #5b0813;
+  --color-border-focus: #6E1122;
 
   /* Estados e Indicadores */
   --color-status-online: #10b981;
