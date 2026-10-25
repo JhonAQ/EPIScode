@@ -2,7 +2,7 @@ import { InvalidQueryError } from "@/server/domain/errors";
 import type { Docente, DocentesQuery, Paginado } from "@/types";
 import type { DocenteRepository } from "../ports/docente-repository";
 
-export const DEFAULT_PAGE_SIZE = 10;
+export const DEFAULT_PAGE_SIZE = 12;
 export const MAX_PAGE_SIZE = 50;
 
 /** Caso de uso: directorio docente con búsqueda, filtros y paginación. */
