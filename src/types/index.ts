@@ -38,3 +38,9 @@ export interface ChatResponse {
   answer: string;
   sources: ChatSource[];
 }
+
+// --- Directorio Docente y Malla Curricular ------------------------------------
+
+export * from "./docente";
+export * from "./malla";
+export * from "./paginacion";
