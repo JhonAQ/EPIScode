@@ -1,4 +1,4 @@
-import type { AreaFormativa, CursoMalla, Semestre, TipoCurso } from "@/types";
+import type { AreaFormativa, CursoMalla, Malla, MallaVersion, Semestre, TipoCurso } from "@/types";
 
 /**
  * DATOS DE EJEMPLO para desarrollar sin backend. No son la malla oficial:
@@ -67,3 +67,17 @@ export const MALLA_MOCK: CursoMalla[] = [
   curso(10, "ELE801", "Electivo Profesional II", 3, "Obligatorio", "Computación", ["ELE701"]),
   curso(10, "GOB801", "Gobierno de TI", 3, "Obligatorio", "Sistemas de Información", ["SIS701"]),
 ];
+
+export const MALLA_VERSIONES_MOCK: MallaVersion[] = [
+  { id: "malla-2017", nombre: "Malla 2017", vigente: true },
+  { id: "malla-2010", nombre: "Malla 2010", vigente: false },
+];
+
+/** Malla de la versión vigente, con los totales que muestra la cabecera, calculados de los cursos. */
+export const MALLA_VIGENTE_MOCK: Malla = {
+  version: MALLA_VERSIONES_MOCK[0],
+  totalCreditos: MALLA_MOCK.reduce((total, c) => total + c.creditos, 0),
+  totalSemestres: 10,
+  totalAsignaturas: MALLA_MOCK.length,
+  cursos: MALLA_MOCK,
+};

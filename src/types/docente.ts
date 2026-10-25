@@ -1,12 +1,16 @@
 import type { CursoResumen } from "./malla";
 
-export type GradoAcademico = "Bachiller" | "Ingeniero" | "Magíster" | "Doctor";
-
 export interface Docente {
   id: string;
+  /** Tal como se muestra en la tarjeta, con tratamiento: "Dr. Carlos Mendoza". */
   nombre: string;
-  grado: GradoAcademico;
+  /** Categoría que se muestra bajo el nombre: "Docente Principal", "Docente Asociada". */
+  cargo: string;
+  /** Grado académico en texto: "Doctor en Ciencias de la Computación". */
+  grado: string;
   correo: string;
+  /** URL de la foto. Si falta, el frontend muestra un recuadro de reemplazo. */
+  fotoUrl?: string;
   departamento: string;
   especialidades: string[];
   /** Cursos que dicta; el detalle completo se consulta en la malla. */
@@ -21,6 +25,6 @@ export interface DocentesQuery {
   especialidad?: string;
   /** Empieza en 1. Por defecto 1. */
   page?: number;
-  /** Por defecto 10, máximo 50. */
+  /** Por defecto 12 en el diseño; máximo 50. */
   pageSize?: number;
 }
