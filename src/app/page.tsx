@@ -1,4 +1,8 @@
-import { HeroSection } from "@/features/home";
+import {
+  FeaturedEventSection,
+  HeroSection,
+  featuredEvent,
+} from "@/features/home";
 
 /**
  * ============================================================================
@@ -18,10 +22,15 @@ export default function HomePage() {
       {/* 1. Hero Section Golden Path */}
       <HeroSection />
 
+      <div className="mx-auto flex w-full max-w-[1360px] justify-center px-6 py-12 sm:px-10 lg:justify-end lg:px-16">
+        <div className="w-full max-w-sm lg:max-w-[230px]">
+          <FeaturedEventSection event={featuredEvent} />
+        </div>
+      </div>
+
       {/* Secciones del Home que desarrollará el equipo en el Sprint 1:
           - <NewsSection />
           - <QuickLinksSection />
-          - <FeaturedEventSection />
           - <FloatingAnaiWidget />
       */}
     </div>
