@@ -116,6 +116,18 @@ El backend (`src/server/`) sigue una **arquitectura hexagonal (puertos y adaptad
 - `pnpm start`: Inicia el servidor compilado de producción.
 - `pnpm lint`: Ejecuta el análisis estático de código con ESLint.
 - `pnpm test`: Ejecuta las pruebas de dominio y casos de uso (sin red ni BD).
+- `pnpm seed:docentes-malla`: Carga los datos de ejemplo de docentes y malla en PostgreSQL.
+
+### Base de datos de docentes y malla
+
+Con Docker Desktop iniciado y `DATABASE_URL` configurada en `.env.local` (ver `.env.example`):
+
+1. Ejecuta `pnpm db:up` para iniciar PostgreSQL. Los archivos en `db/init/` se ejecutan al crear el volumen por primera vez.
+2. Si el volumen ya existía antes de añadir el esquema, ejecuta `pnpm db:reset` para recrearlo. **Esto borra todos los datos locales del volumen, incluidos los chunks del RAG.**
+3. Espera a que PostgreSQL esté disponible y ejecuta `pnpm seed:docentes-malla`. Puedes ejecutarlo dos veces sin duplicar los registros.
+4. Consulta las tablas con Adminer en [http://localhost:8080](http://localhost:8080); usa `db` como servidor y las credenciales de Docker Compose.
+
+El seed carga los mocks de `src/mocks/`: los cursos pertenecen a la malla vigente de ejemplo. Los identificadores internos `mock:<código>` no establecen equivalencias oficiales entre versiones. El seed agrega o actualiza registros de ejemplo, pero no elimina relaciones antiguas si cambian los mocks. Las consultas de la aplicación siguen usando repositorios en memoria hasta implementar los adaptadores PostgreSQL.
 
 ---
 
