@@ -7,6 +7,7 @@ import { InMemoryDocenteRepository } from "@/server/infrastructure/in-memory/in-
 import { InMemoryMallaRepository } from "@/server/infrastructure/in-memory/in-memory-malla-repository";
 import { parseDocentesQuery } from "@/server/interface/http/docentes-query";
 import { DEFAULT_PAGE_SIZE, ListarDocentes, MAX_PAGE_SIZE } from "./listar-docentes";
+import { ObtenerDocente } from "./obtener-docente";
 
 const listar = new ListarDocentes(new InMemoryDocenteRepository());
 
@@ -82,6 +83,33 @@ describe("ListarDocentes", () => {
     await assert.rejects(listar.execute({ page: 1.5 }), InvalidQueryError);
     await assert.rejects(listar.execute({ pageSize: 0 }), InvalidQueryError);
     await assert.rejects(listar.execute({ pageSize: MAX_PAGE_SIZE + 1 }), InvalidQueryError);
+  });
+});
+
+describe("ObtenerDocente", () => {
+  const obtener = new ObtenerDocente(new InMemoryDocenteRepository());
+
+  it("devuelve el docente con sus cursos, departamento y grado para un id válido", async () => {
+    const docente = await obtener.execute("doc-001");
+    assert.ok(docente);
+    assert.equal(docente.id, "doc-001");
+    assert.equal(docente.departamento, "Ingeniería de Sistemas");
+    assert.equal(docente.grado, "Doctor en Ciencias de la Computación");
+    assert.ok(docente.cursos.length > 0);
+    for (const curso of docente.cursos) {
+      assert.ok(curso.codigo);
+      assert.ok(curso.nombre);
+    }
+  });
+
+  it("devuelve null si el id no existe", async () => {
+    const docente = await obtener.execute("doc-no-existe");
+    assert.equal(docente, null);
+  });
+
+  it("rechaza con InvalidQueryError si el id está vacío o contiene solo espacios", async () => {
+    await assert.rejects(obtener.execute(""), InvalidQueryError);
+    await assert.rejects(obtener.execute("   "), InvalidQueryError);
   });
 });
 
