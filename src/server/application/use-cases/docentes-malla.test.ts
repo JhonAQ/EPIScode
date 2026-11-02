@@ -6,9 +6,13 @@ import { InvalidQueryError } from "@/server/domain/errors";
 import { InMemoryDocenteRepository } from "@/server/infrastructure/in-memory/in-memory-docente-repository";
 import { InMemoryMallaRepository } from "@/server/infrastructure/in-memory/in-memory-malla-repository";
 import { parseDocentesQuery } from "@/server/interface/http/docentes-query";
+import { parseMallaQuery } from "@/server/interface/http/malla-query";
+import type { AreaFormativa, Semestre, TipoCurso } from "@/types";
 import { DEFAULT_PAGE_SIZE, ListarDocentes, MAX_PAGE_SIZE } from "./listar-docentes";
+import { ListarMalla } from "./listar-malla";
 
 const listar = new ListarDocentes(new InMemoryDocenteRepository());
+const listarMalla = new ListarMalla(new InMemoryMallaRepository());
 
 describe("mocks", () => {
   it("la malla es coherente: códigos únicos y prerrequisitos de semestres anteriores", () => {
@@ -118,8 +122,126 @@ describe("InMemoryMallaRepository", () => {
     assert.ok((await repo.findAll({ areaFormativa: "Redes y Sistemas" })).every((c) => c.areaFormativa === "Redes y Sistemas"));
   });
 
+  it("busca por texto libre q en nombre o código", async () => {
+    const porNombre = await repo.findAll({ q: "matemática" });
+    assert.ok(porNombre.length >= 3);
+    assert.ok(porNombre.every((c) => c.nombre.includes("Matemática")));
+
+    const porCodigo = await repo.findAll({ q: "prg10" });
+    assert.deepEqual(porCodigo.map((c) => c.codigo), ["PRG101", "PRG102"]);
+  });
+
   it("busca un curso por código", async () => {
     assert.equal((await repo.findByCodigo("MAT101"))?.nombre, "Matemática I");
     assert.equal(await repo.findByCodigo("NOEXISTE"), null);
+  });
+});
+
+describe("parseMallaQuery", () => {
+  it("convierte la query string válida y descarta vacíos", () => {
+    const query = parseMallaQuery(
+      new URLSearchParams("version=%20malla-2017%20&areaFormativa=Computación&semestre=2&tipo=Núcleo&q=%20poo%20"),
+    );
+    assert.deepEqual(query, {
+      version: "malla-2017",
+      areaFormativa: "Computación",
+      semestre: 2,
+      tipo: "Núcleo",
+      q: "poo",
+    });
+  });
+
+  it("rechaza semestre inválido (11, 0, no entero o texto)", () => {
+    assert.throws(() => parseMallaQuery(new URLSearchParams("semestre=11")), InvalidQueryError);
+    assert.throws(() => parseMallaQuery(new URLSearchParams("semestre=0")), InvalidQueryError);
+    assert.throws(() => parseMallaQuery(new URLSearchParams("semestre=2.5")), InvalidQueryError);
+    assert.throws(() => parseMallaQuery(new URLSearchParams("semestre=abc")), InvalidQueryError);
+  });
+
+  it("rechaza tipo desconocido", () => {
+    assert.throws(() => parseMallaQuery(new URLSearchParams("tipo=desconocido")), InvalidQueryError);
+    assert.throws(() => parseMallaQuery(new URLSearchParams("tipo=Electivo")), InvalidQueryError);
+  });
+
+  it("rechaza areaFormativa desconocida", () => {
+    assert.throws(() => parseMallaQuery(new URLSearchParams("areaFormativa=Artes")), InvalidQueryError);
+  });
+});
+
+describe("ListarMalla", () => {
+  it("sin filtros devuelve la versión vigente por defecto con totales completos", async () => {
+    const res = await listarMalla.execute({});
+    assert.equal(res.version.id, "malla-2017");
+    assert.equal(res.version.vigente, true);
+    assert.equal(res.totalAsignaturas, MALLA_MOCK.length);
+    assert.equal(res.totalCreditos, MALLA_MOCK.reduce((sum, c) => sum + c.creditos, 0));
+    assert.equal(res.totalSemestres, 10);
+    assert.equal(res.cursos.length, MALLA_MOCK.length);
+    // Cursos ordenados por semestre
+    assert.ok(res.cursos.every((c, i) => i === 0 || res.cursos[i - 1].semestre <= c.semestre));
+  });
+
+  it("filtro por version: devuelve la versión solicitada", async () => {
+    const res = await listarMalla.execute({ version: "malla-2010" });
+    assert.equal(res.version.id, "malla-2010");
+    assert.equal(res.version.vigente, false);
+  });
+
+  it("filtro por areaFormativa", async () => {
+    const res = await listarMalla.execute({ areaFormativa: "Ciencias Básicas" });
+    assert.ok(res.cursos.length > 0);
+    assert.ok(res.cursos.every((c) => c.areaFormativa === "Ciencias Básicas"));
+    // Totales se mantienen completos
+    assert.equal(res.totalAsignaturas, MALLA_MOCK.length);
+  });
+
+  it("filtro por semestre", async () => {
+    const res = await listarMalla.execute({ semestre: 1 });
+    assert.ok(res.cursos.length > 0);
+    assert.ok(res.cursos.every((c) => c.semestre === 1));
+    // Totales se mantienen completos
+    assert.equal(res.totalAsignaturas, MALLA_MOCK.length);
+  });
+
+  it("filtro por tipo", async () => {
+    const res = await listarMalla.execute({ tipo: "General" });
+    assert.ok(res.cursos.length > 0);
+    assert.ok(res.cursos.every((c) => c.tipo === "General"));
+    // Totales se mantienen completos
+    assert.equal(res.totalAsignaturas, MALLA_MOCK.length);
+  });
+
+  it("filtro por texto q (nombre o código)", async () => {
+    const res = await listarMalla.execute({ q: "PRG101" });
+    assert.equal(res.cursos.length, 1);
+    assert.equal(res.cursos[0].codigo, "PRG101");
+
+    const resNombre = await listarMalla.execute({ q: "algoritmos" });
+    assert.ok(resNombre.cursos.length > 0);
+    assert.ok(resNombre.cursos.some((c) => c.codigo === "ALG301"));
+  });
+
+  it("filtro combinado: aplica todos los criterios con AND y conserva totales completos", async () => {
+    const res = await listarMalla.execute({
+      semestre: 1,
+      tipo: "Núcleo",
+      areaFormativa: "Computación",
+      q: "programación",
+    });
+    assert.equal(res.cursos.length, 1);
+    assert.equal(res.cursos[0].codigo, "PRG101");
+
+    // Totales corresponden a la versión completa, no a lo filtrado
+    assert.equal(res.totalAsignaturas, MALLA_MOCK.length);
+    assert.equal(res.totalCreditos, MALLA_MOCK.reduce((sum, c) => sum + c.creditos, 0));
+    assert.equal(res.totalSemestres, 10);
+  });
+
+  it("rechaza valores inválidos con InvalidQueryError", async () => {
+    await assert.rejects(listarMalla.execute({ semestre: 11 as Semestre }), InvalidQueryError);
+    await assert.rejects(listarMalla.execute({ semestre: 0 as Semestre }), InvalidQueryError);
+    await assert.rejects(listarMalla.execute({ tipo: "Invalido" as TipoCurso }), InvalidQueryError);
+    await assert.rejects(listarMalla.execute({ areaFormativa: "Invalida" as AreaFormativa }), InvalidQueryError);
+    await assert.rejects(listarMalla.execute({ version: "malla-inexistente" }), InvalidQueryError);
   });
 });
