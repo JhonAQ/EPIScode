@@ -1,6 +1,7 @@
 import { AnswerQuestion } from "@/server/application/use-cases/answer-question";
 import { IngestDocument } from "@/server/application/use-cases/ingest-document";
 import { ListarDocentes } from "@/server/application/use-cases/listar-docentes";
+import { ObtenerDocente } from "@/server/application/use-cases/obtener-docente";
 import { HuggingFaceEmbeddingProvider } from "@/server/infrastructure/embeddings/huggingface-embedding-provider";
 import { InMemoryDocenteRepository } from "@/server/infrastructure/in-memory/in-memory-docente-repository";
 import { InMemoryMallaRepository } from "@/server/infrastructure/in-memory/in-memory-malla-repository";
@@ -21,6 +22,7 @@ export const mallaRepository = new InMemoryMallaRepository();
 let answerQuestion: AnswerQuestion | undefined;
 let ingestDocument: IngestDocument | undefined;
 let listarDocentes: ListarDocentes | undefined;
+let obtenerDocente: ObtenerDocente | undefined;
 
 // Se crean bajo demanda: así faltar una API key no rompe el arranque de toda la app.
 export function getAnswerQuestion(): AnswerQuestion {
@@ -36,4 +38,9 @@ export function getIngestDocument(): IngestDocument {
 export function getListarDocentes(): ListarDocentes {
   listarDocentes ??= new ListarDocentes(docenteRepository);
   return listarDocentes;
+}
+
+export function getObtenerDocente(): ObtenerDocente {
+  obtenerDocente ??= new ObtenerDocente(docenteRepository);
+  return obtenerDocente;
 }
