@@ -1,6 +1,9 @@
 "use client";
 
-import type { ChatMessage, ChatSource } from "@/types";
+import { useCallback, useRef, useState } from "react";
+import type { ApiResponse, ChatMessage, ChatResponse, ChatSource } from "@/types";
+
+const MAX_CONVERSATION_MESSAGES = 20;
 
 /** Mensaje tal como lo pinta la UI: el del API más las fuentes (solo en respuestas del asistente). */
 export interface UiMessage extends ChatMessage {
@@ -15,22 +18,61 @@ export interface UseChatResult {
   send: (content: string) => Promise<void>;
 }
 
-/**
- * TODO (Integrante D): implementar el estado y la comunicación con el backend.
- *
- * Contrato del endpoint (ya existe en src/app/api/chat/route.ts):
- *   POST /api/chat
- *   body:      { messages: { role: "user" | "assistant", content: string }[] }
- *   respuesta: { success: boolean, data?: { answer: string, sources: ChatSource[] }, error?: string }
- *
- * Qué debe hacer:
- *  - Agregar el mensaje del usuario al historial de inmediato (UI optimista).
- *  - Enviar el historial completo (solo `role` y `content`, sin `sources`).
- *  - Manejar `loading` y `error` (red caída, 400, 500).
- *  - Evitar envíos duplicados mientras `loading` es true.
- *
- * Reto: cuando el backend soporte streaming, ir actualizando el último mensaje token a token.
- */
 export function useChat(): UseChatResult {
-  throw new Error("TODO: implementar useChat() en src/features/chatbot/hooks/useChat.ts");
+  const [messages, setMessages] = useState<UiMessage[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const requestInProgress = useRef(false);
+
+  const send = useCallback(async (content: string) => {
+    const question = content.trim();
+    if (!question || requestInProgress.current) return;
+
+    // El ref bloquea un doble envío antes del siguiente render de React.
+    requestInProgress.current = true;
+    setLoading(true);
+    setError(null);
+
+    const history: ChatMessage[] = messages.map(({ role, content: messageContent }) => ({
+      role,
+      content: messageContent,
+    }));
+    const latestMessage: ChatMessage = { role: "user", content: question };
+    const conversation = [
+      ...history,
+      latestMessage,
+    ].slice(-MAX_CONVERSATION_MESSAGES);
+    // La vista conserva las fuentes; la solicitud envía únicamente role y content.
+    setMessages((current) => [...current, latestMessage]);
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: conversation }),
+      });
+      const result = (await response.json()) as ApiResponse<ChatResponse>;
+      const data = result.data;
+
+      if (!response.ok || !result.success || !data) {
+        throw new Error(result.error ?? "No se pudo obtener una respuesta de ANAI.");
+      }
+
+      setMessages((current) => [
+        ...current,
+        { role: "assistant", content: data.answer, sources: data.sources },
+      ]);
+    } catch (cause) {
+      setError(
+        cause instanceof Error && cause.name !== "TypeError" && cause.name !== "SyntaxError"
+          ? cause.message
+          : "No se pudo conectar con ANAI. Revisa tu conexión e intenta de nuevo.",
+      );
+    } finally {
+      requestInProgress.current = false;
+      setLoading(false);
+    }
+  }, [messages]);
+
+  return { messages, loading, error, send };
 }
