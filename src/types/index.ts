@@ -44,3 +44,7 @@ export interface ChatResponse {
 export * from "./docente";
 export * from "./malla";
 export * from "./paginacion";
+
+// --- Novedades ---------------------------------------------------------------
+
+export * from "./noticia";
