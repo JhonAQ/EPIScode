@@ -1,4 +1,4 @@
-import type { CursoMalla, MallaQuery } from "@/types";
+import type { CursoMalla, MallaQuery, MallaVersion } from "@/types";
 
 /** Puerto de salida: dónde vive la malla curricular (memoria, Postgres, etc.). */
 export interface MallaRepository {
@@ -6,4 +6,6 @@ export interface MallaRepository {
   findAll(filter: MallaQuery): Promise<CursoMalla[]>;
   /** `null` si no existe. */
   findByCodigo(codigo: string): Promise<CursoMalla | null>;
+  /** Lista todas las versiones registradas del plan de estudios. */
+  findVersiones(): Promise<MallaVersion[]>;
 }
