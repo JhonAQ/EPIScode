@@ -1,4 +1,4 @@
-import type { DocenteFilter, DocenteRepository, PageRequest } from "@/server/application/ports/docente-repository";
+import type { DocenteFilter, DocenteRepository, FiltrosDocentes, PageRequest } from "@/server/application/ports/docente-repository";
 import { normalizarTexto } from "@/server/domain/services/normalizar-texto";
 import { DOCENTES_MOCK } from "@/mocks/docentes";
 import type { Docente, Paginado } from "@/types";
@@ -36,5 +36,13 @@ export class InMemoryDocenteRepository implements DocenteRepository {
 
   async findById(id: string): Promise<Docente | null> {
     return this.docentes.find((d) => d.id === id) ?? null;
+  }
+
+  async listarFiltros(): Promise<FiltrosDocentes> {
+    const ordenar = (a: string, b: string) => a.localeCompare(b, "es");
+    return {
+      departamentos: [...new Set(this.docentes.map((docente) => docente.departamento))].sort(ordenar),
+      especialidades: [...new Set(this.docentes.flatMap((docente) => docente.especialidades))].sort(ordenar),
+    };
   }
 }

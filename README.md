@@ -116,6 +116,28 @@ El backend (`src/server/`) sigue una **arquitectura hexagonal (puertos y adaptad
 - `pnpm start`: Inicia el servidor compilado de producción.
 - `pnpm lint`: Ejecuta el análisis estático de código con ESLint.
 - `pnpm test`: Ejecuta las pruebas de dominio y casos de uso (sin red ni BD).
+- `pnpm seed:docentes-malla`: Carga los datos de ejemplo de docentes y malla en PostgreSQL.
+
+### Base de datos de docentes y malla
+
+Con Docker Desktop iniciado y `DATABASE_URL` configurada en `.env.local` (ver `.env.example`):
+
+1. Ejecuta `pnpm db:up` para iniciar PostgreSQL. Los archivos en `db/init/` se ejecutan al crear el volumen por primera vez.
+2. Si el volumen ya existía antes de añadir el esquema, ejecuta `pnpm db:reset` para recrearlo. **Esto borra todos los datos locales del volumen, incluidos los chunks del RAG.**
+3. Espera a que PostgreSQL esté disponible y ejecuta `pnpm seed:docentes-malla`. Puedes ejecutarlo dos veces sin duplicar los registros.
+4. Consulta las tablas con Adminer en [http://localhost:8080](http://localhost:8080); usa `db` como servidor y las credenciales de Docker Compose.
+
+El seed carga los mocks de `src/mocks/`: los cursos pertenecen a la malla vigente de ejemplo. Los identificadores internos `mock:<código>` no establecen equivalencias oficiales entre versiones. El seed agrega o actualiza registros de ejemplo, pero no elimina relaciones antiguas si cambian los mocks.
+
+Los repositorios de docentes y malla consultan PostgreSQL. Si no se indica una versión de malla, se usa la vigente; la búsqueda de un curso por código también usa la vigente. Los cursos que se muestran para cada docente corresponden a esa misma versión.
+
+Para ejecutar las pruebas de integración PostgreSQL, inicia la base y utiliza una `DATABASE_URL` de desarrollo con permiso para crear y eliminar esquemas. Las pruebas crean y eliminan un esquema aislado; no reinician el volumen. En PowerShell:
+
+```powershell
+$env:RUN_DB_TESTS = "1"
+pnpm test:postgres
+Remove-Item Env:RUN_DB_TESTS
+```
 
 ---
 
