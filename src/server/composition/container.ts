@@ -1,9 +1,10 @@
 import { AnswerQuestion } from "@/server/application/use-cases/answer-question";
 import { IngestDocument } from "@/server/application/use-cases/ingest-document";
 import { ListarDocentes } from "@/server/application/use-cases/listar-docentes";
+import { ListarFiltrosDocentes } from "@/server/application/use-cases/listar-filtros-docentes";
 import { HuggingFaceEmbeddingProvider } from "@/server/infrastructure/embeddings/huggingface-embedding-provider";
-import { InMemoryDocenteRepository } from "@/server/infrastructure/in-memory/in-memory-docente-repository";
-import { InMemoryMallaRepository } from "@/server/infrastructure/in-memory/in-memory-malla-repository";
+import { PgDocenteRepository } from "@/server/infrastructure/persistence/postgres/pg-docente-repository";
+import { PgMallaRepository } from "@/server/infrastructure/persistence/postgres/pg-malla-repository";
 import { createLlmClient } from "@/server/infrastructure/llm/create-llm-client";
 import { PgVectorStore } from "@/server/infrastructure/persistence/postgres/pg-vector-store";
 
@@ -14,13 +15,13 @@ import { PgVectorStore } from "@/server/infrastructure/persistence/postgres/pg-v
 const embeddings = new HuggingFaceEmbeddingProvider();
 const store = new PgVectorStore();
 
-// Docentes y malla: hoy en memoria sobre los mocks. Al tener Postgres, solo se cambia aquí.
-export const docenteRepository = new InMemoryDocenteRepository();
-export const mallaRepository = new InMemoryMallaRepository();
+export const docenteRepository = new PgDocenteRepository();
+export const mallaRepository = new PgMallaRepository();
 
 let answerQuestion: AnswerQuestion | undefined;
 let ingestDocument: IngestDocument | undefined;
 let listarDocentes: ListarDocentes | undefined;
+let listarFiltrosDocentes: ListarFiltrosDocentes | undefined;
 
 // Se crean bajo demanda: así faltar una API key no rompe el arranque de toda la app.
 export function getAnswerQuestion(): AnswerQuestion {
@@ -36,4 +37,9 @@ export function getIngestDocument(): IngestDocument {
 export function getListarDocentes(): ListarDocentes {
   listarDocentes ??= new ListarDocentes(docenteRepository);
   return listarDocentes;
+}
+
+export function getListarFiltrosDocentes(): ListarFiltrosDocentes {
+  listarFiltrosDocentes ??= new ListarFiltrosDocentes(docenteRepository);
+  return listarFiltrosDocentes;
 }

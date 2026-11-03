@@ -13,10 +13,16 @@ export interface PageRequest {
   pageSize: number;
 }
 
+export interface FiltrosDocentes {
+  departamentos: string[];
+  especialidades: string[];
+}
+
 /** Puerto de salida: dónde viven los docentes (memoria, Postgres, etc.). */
 export interface DocenteRepository {
   /** Aplica los filtros (combinados con AND) y devuelve solo la página pedida. `total` cuenta todos los que coinciden. */
   search(filter: DocenteFilter, pageRequest: PageRequest): Promise<Paginado<Docente>>;
   /** `null` si no existe. */
   findById(id: string): Promise<Docente | null>;
+  listarFiltros(): Promise<FiltrosDocentes>;
 }
