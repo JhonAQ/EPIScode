@@ -16,19 +16,19 @@ import { Button } from "@/components/ui/Button";
  * 2. Cero emojis como iconos; usar únicamente SVGs vectoriales nativos accesibles.
  * 3. Prohibido el uso de `border-left` acentuado según las reglas de diseño globales.
  * 4. Componentes atómicos se importan desde `@/components/ui`.
- * 5. El ancho máximo del contenedor principal es `max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-16`.
+ * 5. El contenedor del Home usa `max-w-[984px] mx-auto px-6 sm:px-10 lg:px-14`.
  */
 export function HeroSection() {
   return (
-    <section className="relative w-full overflow-hidden bg-white py-10 sm:py-14 lg:py-16">
+    <section className="relative w-full overflow-hidden bg-white py-10 sm:py-14 lg:pt-[88px] lg:pb-14">
       {/* Contenedor responsivo con padding horizontal balanceado acorde a Figma */}
-      <div className="w-full max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+      <div className="w-full max-w-[984px] mx-auto px-6 sm:px-10 lg:px-14">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.25fr_1fr] gap-10 lg:gap-8 items-center">
           
           {/* ================================================================
               COLUMNA IZQUIERDA: Titular, propuesta de valor y llamada a la acción
               ================================================================ */}
-          <div className="lg:col-span-7 space-y-6 lg:space-y-7 relative z-10 text-left">
+          <div className="space-y-6 lg:space-y-6 lg:translate-x-2 lg:-translate-y-4 relative z-10 text-left">
             
             {/* Detalle decorativo institucional: Trazo horizontal, diagonal a 45° y vertical con punto */}
             <div
@@ -36,8 +36,8 @@ export function HeroSection() {
               aria-hidden="true"
             >
               <svg
-                width="68"
-                height="145"
+                width="48"
+                height="100"
                 viewBox="0 0 68 145"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -56,30 +56,30 @@ export function HeroSection() {
             </div>
 
             {/* Badge superior de pertenencia facultativa */}
-            <div className="inline-flex items-center px-4 py-1.5 rounded-full border border-zinc-200/90 bg-white shadow-xs">
-              <span className="text-[11px] sm:text-xs font-semibold tracking-wider text-zinc-700 uppercase">
+            <div className="inline-flex items-center px-4 py-1 rounded-full border border-zinc-200/90 bg-white shadow-xs">
+              <span className="text-[9px] font-medium tracking-[0.16em] text-zinc-700 uppercase">
                 Facultad de Ingeniería de Producción y Servicios
               </span>
             </div>
 
             {/* Titular Principal Institucional con contraste tipográfico */}
-            <h1 className="text-4xl sm:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.08] text-zinc-900">
+            <h1 className="text-5xl sm:text-6xl lg:text-[68px] font-extrabold tracking-tighter leading-[0.88] text-zinc-900">
               <span className="block">Ingeniería de</span>
               <span className="block text-epis-maroon">Sistemas</span>
             </h1>
 
             {/* Subtítulo / Propuesta de valor */}
-            <p className="text-base sm:text-lg text-zinc-600 font-normal leading-relaxed max-w-lg">
+            <p className="text-base text-zinc-600 font-normal leading-relaxed max-w-[270px]">
               Tecnología, innovación y personas para un mejor mañana.
             </p>
 
             {/* Fila de acción: Botón CTA y micro-descripción */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 pt-1">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-1">
               <Link href="/institucional">
                 <Button
                   variant="primary"
-                  size="lg"
-                  className="rounded-full px-7 py-3 text-sm font-semibold shadow-md hover:shadow-lg transition-all gap-2"
+                  size="sm"
+                  className="rounded-full px-5 py-2.5 text-xs font-medium gap-2"
                   rightIcon={
                     <svg
                       className="w-4 h-4 transition-transform group-hover:translate-x-0.5"
@@ -103,10 +103,10 @@ export function HeroSection() {
               </Link>
 
               {/* Separador vertical */}
-              <div className="hidden sm:block h-9 w-[1.5px] bg-epis-maroon/20 mx-1 shrink-0" />
+              <div className="hidden sm:block h-9 w-px bg-epis-maroon/60 mx-1 shrink-0" />
 
               {/* Mensaje complementario */}
-              <p className="text-xs sm:text-sm text-zinc-500 max-w-[210px] leading-snug">
+              <p className="text-[10px] text-zinc-600 max-w-[190px] leading-snug">
                 Soluciones digitales para un mundo en constante transformación.
               </p>
             </div>
@@ -115,8 +115,8 @@ export function HeroSection() {
           {/* ================================================================
               COLUMNA DERECHA: Composición gráfica compacta y proporcionada
               ================================================================ */}
-          <div className="lg:col-span-5 flex justify-center items-center relative">
-            <div className="relative w-full max-w-[340px] sm:max-w-[380px] lg:max-w-[400px] aspect-[4/5] flex items-center justify-center">
+          <div className="flex justify-center items-center relative lg:translate-x-9 lg:-translate-y-4">
+            <div className="relative w-full max-w-[340px] sm:max-w-[360px] aspect-[9/10] flex items-center justify-center">
               
               {/* Anillos concéntricos institucionales de fondo */}
               <div
@@ -125,12 +125,11 @@ export function HeroSection() {
               >
                 <div className="w-[220px] h-[220px] sm:w-[250px] sm:h-[250px] rounded-full border border-epis-maroon/20" />
                 <div className="absolute w-[300px] h-[300px] sm:w-[340px] sm:h-[340px] rounded-full border border-epis-maroon/15" />
-                <div className="absolute w-[380px] h-[380px] sm:w-[420px] sm:h-[420px] rounded-full border border-epis-maroon/10" />
               </div>
 
               {/* Bloque geométrico superior izquierdo */}
               <div
-                className="absolute top-8 left-1 sm:left-3 w-24 h-16 sm:w-28 sm:h-20 bg-epis-maroon rounded-lg opacity-90 shadow-sm z-0 flex items-center justify-center"
+                className="absolute top-0 left-1 sm:-left-3 w-24 h-16 sm:w-[116px] sm:h-[87px] bg-epis-maroon opacity-80 z-20 flex items-center justify-center"
                 aria-hidden="true"
               >
                 <span className="text-white/40 text-xs font-mono font-light select-none">
@@ -140,7 +139,7 @@ export function HeroSection() {
 
               {/* Bloque geométrico inferior derecho */}
               <div
-                className="absolute bottom-4 right-1 sm:right-3 w-20 h-28 sm:w-24 sm:h-36 bg-epis-maroon rounded-lg opacity-95 shadow-sm z-0 flex items-center justify-center"
+                className="absolute -bottom-6 -right-2 sm:-right-4 w-20 h-28 sm:w-[89px] sm:h-[149px] bg-epis-maroon opacity-90 z-20 flex items-center justify-center"
                 aria-hidden="true"
               >
                 <span className="text-white/40 text-xs font-mono font-light select-none">
@@ -156,7 +155,7 @@ export function HeroSection() {
                   width={400}
                   height={500}
                   priority
-                  className="w-auto h-[88%] sm:h-[92%] object-contain select-none pointer-events-none"
+                  className="w-auto h-full object-contain select-none pointer-events-none"
                 />
               </div>
 

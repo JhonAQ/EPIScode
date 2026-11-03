@@ -1,29 +1,17 @@
-import { HeroSection } from "@/features/home";
+import { HeroSection, NewsSection, QuickLinksSection } from "@/features/home";
+import { NOTICIAS_MOCK } from "@/mocks/noticias";
 
-/**
- * ============================================================================
- * VISTA PRINCIPAL (HOME PAGE) - PORTAL EPIS UNSA
- * ============================================================================
- * Esta página representa el Golden Path del portal.
- *
- * Estructura de Secciones:
- * 1. HeroSection (Sprint 0) -> Implementado como referencia de diseño y arquitectura.
- * 2. Novedades / Noticias (Sprint 1 - #11).
- * 3. Accesos Rápidos y Eventos Destacados (Sprint 1 - #12).
- * 4. Widget Flotante ANAI (Sprint 1 - #13).
- */
 export default function HomePage() {
   return (
-    <div className="flex flex-col w-full min-h-screen bg-white">
-      {/* 1. Hero Section Golden Path */}
+    <div className="flex min-h-screen w-full flex-col bg-white">
       <HeroSection />
-
-      {/* Secciones del Home que desarrollará el equipo en el Sprint 1:
-          - <NewsSection />
-          - <QuickLinksSection />
-          - <FeaturedEventSection />
-          - <FloatingAnaiWidget />
-      */}
+      <div className="mx-auto w-full max-w-[984px] px-6 pb-16 pt-6 sm:px-10 sm:pb-24 lg:px-14 lg:pt-8">
+        {/* La tercera columna podrá recibir el evento destacado de otra issue. */}
+        <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,352px)_minmax(0,216px)_minmax(0,1fr)] lg:gap-10">
+          <NewsSection noticias={NOTICIAS_MOCK} />
+          <QuickLinksSection />
+        </div>
+      </div>
     </div>
   );
 }

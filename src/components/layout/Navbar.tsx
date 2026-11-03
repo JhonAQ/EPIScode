@@ -23,24 +23,9 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { label: "Inicio", href: "/" },
   { label: "Institucional", href: "/institucional" },
-  {
-    label: "Académica",
-    href: "/academica",
-    dropdown: [
-      {
-        title: "Mallas Curriculares",
-        description: "Plan de estudios y prerrequisitos por semestre",
-        href: "/academica/mallas",
-      },
-      {
-        title: "Repositorio Académico",
-        description: "Sílabos, materiales y guías académicas",
-        href: "/academica/repositorio",
-      },
-    ],
-  },
-  { label: "Novedades", href: "/novedades" },
+  { label: "Noticias", href: "/novedades" },
   { label: "Comunidad", href: "/comunidad" },
+  { label: "Estudiantes", href: "/estudiantes" },
   { label: "Contacto", href: "/contacto" },
 ];
 
@@ -73,16 +58,16 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white shadow-[0_2px_14px_rgba(0,0,0,0.06)] border-b border-zinc-100 transition-all duration-200">
+    <header className="sticky top-0 z-50 w-full border-b border-zinc-100 bg-white">
       <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex h-16 items-center justify-between gap-3">
           {/* Brand Logo EPIS - UNSA (Fiel a uploaded_media_0 y Figma) */}
           <Link
             href="/"
-            className="flex items-center gap-3 shrink-0 group py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-epis-maroon rounded-lg"
+            className="group flex min-w-0 items-center gap-2 rounded-lg py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-epis-maroon"
           >
             {/* Official EPIS Emblem from /assets */}
-            <div className="relative h-9 w-[130px] shrink-0 flex items-center">
+            <div className="relative flex h-7 w-[90px] shrink-0 items-center">
               <Image
                 src="/assets/logo-epis.png"
                 alt="Escuela Profesional de Ingeniería de Sistemas"
@@ -94,17 +79,17 @@ export function Navbar() {
             </div>
 
             {/* Vertical Separator */}
-            <div className="h-9 w-[1px] bg-zinc-300 mx-1 shrink-0" />
+            <div className="mx-1 h-7 w-px shrink-0 bg-zinc-200" />
 
             {/* Plain Institutional Typography (UNSA is text, NOT a pill tag) */}
-            <div className="flex flex-col text-left justify-center select-none leading-tight">
-              <span className="text-[13px] font-semibold text-zinc-900 tracking-tight">
+            <div className="flex min-w-0 select-none flex-col justify-center text-left leading-tight">
+              <span className="text-[10px] font-medium text-zinc-900">
                 Escuela Profesional
               </span>
-              <span className="text-[12px] font-normal text-zinc-600">
+              <span className="text-[9px] font-normal text-zinc-600">
                 de Ingeniería de Sistemas
               </span>
-              <span className="text-[12px] font-bold text-zinc-700 tracking-wider uppercase">
+              <span className="text-[9px] font-normal text-zinc-700 uppercase">
                 UNSA
               </span>
             </div>
@@ -127,7 +112,7 @@ export function Navbar() {
                   <Link
                     href={item.href}
                     className={cn(
-                      "px-3.5 py-2 text-sm font-medium transition-colors relative flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-epis-maroon rounded-md",
+                      "px-2 py-2 text-xs font-medium transition-colors relative flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-epis-maroon rounded-md",
                       active
                         ? "text-epis-maroon font-semibold"
                         : "text-text-muted hover:text-text-main"
@@ -238,7 +223,7 @@ export function Navbar() {
             <Button
               variant="primary"
               size="md"
-              className="gap-2 px-5 font-semibold text-sm shadow-sm"
+              className="gap-2 whitespace-nowrap rounded-full px-5 text-xs font-medium"
               rightIcon={
                 <svg
                   className="w-4 h-4"
