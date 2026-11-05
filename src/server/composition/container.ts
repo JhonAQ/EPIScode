@@ -4,10 +4,10 @@ import { ListarDocentes } from "@/server/application/use-cases/listar-docentes";
 import { RegistrarColaboracion } from "@/server/application/use-cases/registrar-colaboracion";
 import { HuggingFaceEmbeddingProvider } from "@/server/infrastructure/embeddings/huggingface-embedding-provider";
 import { InMemoryDocenteRepository } from "@/server/infrastructure/in-memory/in-memory-docente-repository";
-import { InMemoryColaboracionRepository } from "@/server/infrastructure/in-memory/in-memory-colaboracion-repository";
 import { InMemoryMallaRepository } from "@/server/infrastructure/in-memory/in-memory-malla-repository";
 import { createLlmClient } from "@/server/infrastructure/llm/create-llm-client";
 import { PgVectorStore } from "@/server/infrastructure/persistence/postgres/pg-vector-store";
+import { PgColaboracionRepository } from "@/server/infrastructure/persistence/postgres/pg-colaboracion-repository";
 
 /**
  * Composition root: el ÚNICO lugar que conoce las implementaciones concretas.
@@ -42,6 +42,6 @@ export function getListarDocentes(): ListarDocentes {
 }
 
 export function getRegistrarColaboracion(): RegistrarColaboracion {
-  registrarColaboracion ??= new RegistrarColaboracion(new InMemoryColaboracionRepository());
+  registrarColaboracion ??= new RegistrarColaboracion(new PgColaboracionRepository());
   return registrarColaboracion;
 }

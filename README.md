@@ -123,7 +123,23 @@ El backend (`src/server/`) sigue una **arquitectura hexagonal (puertos y adaptad
 
 Una solicitud válida devuelve HTTP 201 con `{ "success": true, "data": { "mensaje": "Tu solicitud fue recibida." } }`, sin repetir datos personales. Una solicitud inválida devuelve HTTP 400, un mensaje general en `error` y mensajes por campo en `errores`; un JSON mal formado utiliza `errores.formulario`. Esta propiedad adicional se propone para el futuro frontend y debe revisarse con el equipo.
 
-En esta etapa, las solicitudes se guardan solo en la memoria del proceso: no son persistentes y pueden perderse al reiniciar o entre instancias. El almacenamiento PostgreSQL corresponde al issue #26.
+Las solicitudes se guardan en PostgreSQL con fecha de recepción y estado inicial `nueva`. El endpoint responde 201 solo después de guardarlas; no incluye datos personales en la respuesta.
+
+La tabla se crea mediante `db/init/03-colaboraciones.sql` cuando Docker inicializa un volumen nuevo. Para una base local que ya existía, aplica ese archivo con `psql` o Adminer antes de usar el endpoint; los scripts de `db/init/` no se ejecutan automáticamente en volúmenes existentes. Por ejemplo, con la base del `docker-compose.yml` iniciada:
+
+```bash
+docker compose exec -T db sh -c 'psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /docker-entrypoint-initdb.d/03-colaboraciones.sql'
+```
+
+`pnpm db:reset` también inicializa la tabla desde cero, pero **elimina todos los datos del volumen local**. Comprueba que `DATABASE_URL` en `.env.local` apunta a la misma base antes de probar el endpoint.
+
+Para probar la persistencia, inicia PostgreSQL y configura una `DATABASE_URL` de desarrollo con permiso para crear y eliminar esquemas. La prueba utiliza un esquema temporal aislado, que elimina al terminar, sin reiniciar el volumen. En PowerShell:
+
+```powershell
+$env:RUN_DB_TESTS = "1"
+pnpm test:postgres:colaboraciones
+Remove-Item Env:RUN_DB_TESTS
+```
 
 ---
 
