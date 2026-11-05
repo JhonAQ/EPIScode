@@ -117,6 +117,14 @@ El backend (`src/server/`) sigue una **arquitectura hexagonal (puertos y adaptad
 - `pnpm lint`: Ejecuta el análisis estático de código con ESLint.
 - `pnpm test`: Ejecuta las pruebas de dominio y casos de uso (sin red ni BD).
 
+### Solicitudes de colaboración
+
+`POST /api/colaboraciones` recibe un objeto JSON con `nombre`, `correo`, `tipoInteres` y `mensaje`. Los tres valores permitidos para `tipoInteres` son `investigacion`, `practicas` y `alianzas`; corresponden a las opciones del formulario. Los límites son 150 caracteres para nombre, 254 para correo y 2000 para mensaje, después de quitar espacios exteriores.
+
+Una solicitud válida devuelve HTTP 201 con `{ "success": true, "data": { "mensaje": "Tu solicitud fue recibida." } }`, sin repetir datos personales. Una solicitud inválida devuelve HTTP 400, un mensaje general en `error` y mensajes por campo en `errores`; un JSON mal formado utiliza `errores.formulario`. Esta propiedad adicional se propone para el futuro frontend y debe revisarse con el equipo.
+
+En esta etapa, las solicitudes se guardan solo en la memoria del proceso: no son persistentes y pueden perderse al reiniciar o entre instancias. El almacenamiento PostgreSQL corresponde al issue #26.
+
 ---
 
 ## 🤖 Actividad: Chatbot con RAG
