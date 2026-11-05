@@ -1,11 +1,13 @@
 import { AnswerQuestion } from "@/server/application/use-cases/answer-question";
 import { IngestDocument } from "@/server/application/use-cases/ingest-document";
 import { ListarDocentes } from "@/server/application/use-cases/listar-docentes";
+import { RegistrarColaboracion } from "@/server/application/use-cases/registrar-colaboracion";
 import { HuggingFaceEmbeddingProvider } from "@/server/infrastructure/embeddings/huggingface-embedding-provider";
 import { InMemoryDocenteRepository } from "@/server/infrastructure/in-memory/in-memory-docente-repository";
 import { InMemoryMallaRepository } from "@/server/infrastructure/in-memory/in-memory-malla-repository";
 import { createLlmClient } from "@/server/infrastructure/llm/create-llm-client";
 import { PgVectorStore } from "@/server/infrastructure/persistence/postgres/pg-vector-store";
+import { PgColaboracionRepository } from "@/server/infrastructure/persistence/postgres/pg-colaboracion-repository";
 
 /**
  * Composition root: el ÚNICO lugar que conoce las implementaciones concretas.
@@ -21,6 +23,7 @@ export const mallaRepository = new InMemoryMallaRepository();
 let answerQuestion: AnswerQuestion | undefined;
 let ingestDocument: IngestDocument | undefined;
 let listarDocentes: ListarDocentes | undefined;
+let registrarColaboracion: RegistrarColaboracion | undefined;
 
 // Se crean bajo demanda: así faltar una API key no rompe el arranque de toda la app.
 export function getAnswerQuestion(): AnswerQuestion {
@@ -36,4 +39,9 @@ export function getIngestDocument(): IngestDocument {
 export function getListarDocentes(): ListarDocentes {
   listarDocentes ??= new ListarDocentes(docenteRepository);
   return listarDocentes;
+}
+
+export function getRegistrarColaboracion(): RegistrarColaboracion {
+  registrarColaboracion ??= new RegistrarColaboracion(new PgColaboracionRepository());
+  return registrarColaboracion;
 }
